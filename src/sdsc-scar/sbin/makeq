@@ -1,0 +1,201 @@
+#!/bin/env python
+
+import commands
+import sys
+from ScarScript import ScarScript
+
+class makeq(ScarScript):
+  """
+  makeq - create a new queue
+
+  makeq [-d -h -q -v] [--chargerate=float] [--defaultmem=mem]
+        [--defaulttime=time] [--exclusive=y/n] [--group=name] [--maxmem=mem]
+        [--maxtime=time] [--maxuserjobs=int] [--maxuserruns=int] name pattern
+
+  This script takes the torque/moab/gold actions required to create a new
+  batch queue, optionally reserving it to users in a specified Unix group.
+  Options:
+
+    -d
+      Display the system commands to create the queue, but don't execute them.
+
+    -h
+      Show this information, then exit.
+
+    -q
+      Don't print system commands before executing them.
+
+    -v
+      Print version, then exit
+
+    --chargerate=float
+      The relative cost of jobs in the queue.  Defaults to 1.0.
+
+    --defaultmem=mem
+      The default memory submissions to the queue. Defaults to the amount of
+      memory per machine.
+
+    --defaultnodes=int
+      The default node count for submissions to the queue. Defaults to the
+      number of nodes per machine.
+
+    --defaulttime=time
+      The default walltime for submissions to the queue. Defaults to 18:00:00.
+
+    --exclusive=y/n
+      Remove nodes in this queue from all other queues.  Defaults to 'n'.
+
+    --group=name
+      Restrict usage of the queue to users in the named Unix group.
+
+    --maxmem=int
+      The max memory submissions to the queue. Defaults to unlimited.
+
+    --maxnodes=int
+      The max node count for submissions to the queue. Defaults to unlimited.
+
+    --maxtime=time
+      The max walltime for submissions to the queue. Defaults to unlimited.
+
+    --maxuserjobs=int
+      The max number of jobs a single user can submit to the queue.  Defaults
+      to unlimited.
+
+    --maxuserruns=int
+      The max number of jobs a single user have running through the queue.
+      Defaults to unlimited.
+
+    name
+      The name of the queue.
+
+    pattern
+      A regular expression that matches the names of the hosts that can be
+      allocated by the queue.
+  """
+
+  VERSION = '1.0'
+
+  def __init__(self):
+
+    (options, args) = self.parseArgs([
+      "--chargerate:s", "--defaultmem:s", "--defaultnodes:i",
+      "--defaulttime:s", "--exclusive:s", "--group:s", "--maxmem:s",
+      "--maxnodes:i", "--maxtime:s", "--maxuserjobs:i", "--maxuserruns:i"
+    ])
+    if len(args) != 2:
+      help(makeq)
+      sys.exit(1)
+    self.chargerate = "1.0"
+    if options.chargerate:
+      self.chargerate = options.chargerate
+    self.defaultmem = options.defaultmem
+    self.defaultnodes = options.defaultnodes
+    self.defaulttime = "18:00:00"
+    if options.defaulttime:
+      self.defaulttime = options.defaulttime
+    self.exclusive = False
+    if options.exclusive:
+      self.exclusive = options.exclusive == 'y'
+    self.group = options.group
+    self.maxmem = options.maxmem
+    self.maxnodes = options.maxnodes
+    self.maxtime = options.maxtime
+    self.maxuserjobs = options.maxuserjobs
+    self.maxuserruns = options.maxuserruns
+    self.queue = args[0]
+    self.nodes = args[1]
+
+    if self.group:
+      groupGid = commands.getoutput(
+        "/bin/grep '^%s:' /etc/group | /bin/awk -F: ' {print $3}'" % self.group
+      )
+      if groupGid == '':
+        print 'group %s does not exist' % self.group
+        sys.exit(1)
+
+    nodes = self.getNodeJobs(self.nodes)
+    if len(nodes) == 0:
+      print 'no nodes match %s' % self.nodes
+      sys.exit(1)
+
+    # create the queue and restrict it to nodes w/the queue property
+    self.do(
+      'qmgr -c "create queue %s queue_type=e,enabled=y,started=y"' % self.queue
+    )
+    self.do(
+      'qmgr -c "set queue %s resources_default.neednodes=%s"' %
+      (self.queue, self.queue)
+    )
+
+    # set default and max usage attributes, as requested
+    self.do(
+      'qmgr -c "set queue %s resources_default.walltime=%s"' %
+      (self.queue, self.defaulttime)
+    )
+    if self.defaultmem:
+      self.do(
+        'qmgr -c "set queue %s resources_default.mem=%s"' %
+        (self.queue, self.defaultmem)
+      )
+    if self.defaultnodes:
+      self.do(
+        'qmgr -c "set queue %s resources_default.nodect=%s"' %
+        (self.queue, self.defaultnodes)
+      )
+    if self.maxmem:
+      self.do(
+        'qmgr -c "set queue %s resources_max.mem=%s"' %
+        (self.queue, self.maxmem)
+      )
+    if self.maxnodes:
+      self.do(
+        'qmgr -c "set queue %s resources_max.nodect=%s"' %
+        (self.queue, self.maxnodes)
+      )
+    if self.maxtime:
+      self.do(
+        'qmgr -c "set queue %s resources_max.walltime=%s"' %
+        (self.queue, self.maxtime)
+      )
+    if self.maxuserjobs:
+      self.do(
+        'qmgr -c "set queue %s max_user_queuable=%s"' %
+        (self.queue, self.maxuserjobs)
+      )
+    if self.maxuserruns:
+      self.do(
+        'qmgr -c "set queue %s max_user_run=%s"' %
+        (self.queue, self.maxuserruns)
+      )
+    
+    # if requested, limit usage to the named Unix group
+    if self.group:
+      self.do('qmgr -c "set queue %s acl_group_enable=y"' % self.queue)
+      self.do('qmgr -c "set queue %s acl_group_sloppy=y"' % self.queue)
+      self.do('qmgr -c "set queue %s acl_groups=%s"' % (self.queue, self.group))
+
+    # add the queue attribute to the named nodes; remove other queue attributes
+    otherQueues = commands.getoutput(
+      "/opt/torque/bin/qstat -Q | /bin/sed -e '1,2d' -e 's/ .*//'"
+    ).split("\n")
+    for node in nodes:
+      if self.exclusive:
+        for q in otherQueues:
+          self.do('qmgr -c "set node %s properties-=%s"' % (node, q))
+      self.do('qmgr -c "set node %s properties+=%s"' % (node, self.queue))
+
+    if self.chargerate != '1.0':
+      # Add a chargerate to the queue
+      self.do(
+        'sudo -u gold goldsh ChargeRate Create Type=NBM Name=QueueName Instance=%s Rate=%s'%
+        (self.queue, self.chargerate)
+      )
+      # Disable moab's allocation management for the queue, since moab doesn't
+      # know about the charge rate
+      self.do('echo CLASSCFG[%s] DISABLEAM=TRUE >> /opt/moab/moab.cfg' %
+              self.queue)
+
+    # restart moab to effect changes
+    self.do("/sbin/service moab restart")
+
+makeq()

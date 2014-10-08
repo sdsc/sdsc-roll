@@ -1,0 +1,48 @@
+#!/bin/env python
+
+import commands
+from ScarScript import ScarScript
+
+class checkaccessconf(ScarScript):
+  """
+  checkaccessconf - checks the access.conf file on specified nodes
+
+  checkaccessconf [--fix] [pattern ...]
+
+  """
+
+  ACCESS_PATH = '/etc/security/access.conf'
+  VERSION = 1.0
+
+  def __init__(self):
+    (options, args) = self.parseArgs(['--fix'])
+    if len(args) == 0:
+      args.append('.')
+    self.fix = options.fix
+
+    nodeJobs = {}
+    for pat in args:
+      nodeJobs.update(self.getNodeJobs(pat))
+    nodes = nodeJobs.keys()
+    nodes.sort()
+
+    for node in nodes:
+      usersAllowedOnHost = ''
+      for job in nodeJobs[node]:
+        if job.find('/') > 0:
+          usersAllowedOnHost += ' %s' % job.split('/')[1]
+      access = '-:ALL EXCEPT root (tscc-admin)%s:ALL' % usersAllowedOnHost
+      command = self.ssh(node, "cat %s" % checkaccessconf.ACCESS_PATH)
+      output = commands.getoutput(command).split("\n")[0]
+      if output == access:
+        print "%s: confirmed '%s'" % (node, access)
+      elif not self.fix:
+        print "%s: is '%s' should be '%s'" % (node, output, access)
+      else:
+        print "%s: changing '%s' to '%s'" % (node, output, access)
+        command = self.ssh(
+          node, 'echo "%s" > %s' % (access, checkaccessconf.ACCESS_PATH)
+        )
+        self.do(command)
+
+checkaccessconf()
