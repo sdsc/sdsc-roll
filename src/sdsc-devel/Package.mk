@@ -13,28 +13,19 @@ else ifeq ("$(COMPILERNAME)", "pgi")
   F77 = pgf77
   FC = pgf90
 endif
-COMPILER = $(CC)
 
-BOOSTSETUP = \
-  module load boost || true; \
-  echo === BOOSTHOME ===; \
-  echo $${BOOSTHOME}
-
-COMPILERSETUP = \
-  module load $(ROLLCOMPILER) || true; \
+LOAD_COMPILER_MODULE = \
+  module load $(1) || true; \
   echo === Compiler and version ===; \
-  $(COMPILER) --version
+  $(2) --version
 
-ifeq ("$(ROLLNETWORK)", "eth")
-  MPIMODULE = $(ROLLMPI)
-else
-  MPIMODULE = $(ROLLMPI)_$(ROLLNETWORK)
-endif
+LOAD_PACKAGE_MODULE = \
+  module load $(1) || true; \
+  echo === $(2) ===; \
+  echo $${$(strip $(2))}
 
-MPISETUP = \
-  module load $(MPIMODULE) || true; \
-  echo === MPIHOME ===; \
-  echo $${MPIHOME}
+GET_COMPILER_VERSION = \
+  `$(1) --version 2>&1 | grep -m1 -o '[0-9][0-9]*\.[0-9][^ ]*'`
 
 GET_MODULE_VERSION = \
   `module display $(1) 2>&1 | grep -i version | grep -om1 '[0-9].*'`
