@@ -102,9 +102,13 @@ class PackageVersionCheck():
         else:
           latestversion = 'unknown'
 
+      note = ''
+      if packageinfo.has_option(package, 'note'):
+        note = '; note: %s' % packageinfo.get(package, 'note')
+
       if self.versioncmp(currentversion, latestversion) == 0:
-        print "%s: local version '%s' is up to date" % (package, currentversion)
+        print "%s: local version '%s' is up to date%s" % (package, currentversion, note)
       else:
-        print "%s: local version '%s'; latest version '%s'" % (package, currentversion, latestversion)
+        print "%s: local version '%s'; latest version '%s'%s" % (package, currentversion, latestversion, note)
 
 PackageVersionCheck()
