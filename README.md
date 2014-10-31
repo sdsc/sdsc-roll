@@ -49,13 +49,3 @@ To install, execute these instructions on a Rocks frontend:
 % rocks run roll sdsc | bash
 ```
 
-## Testing
-
-The sdsc-roll includes a test script which can be run to verify proper
-installation of the roll documentation, binaries and module files. To run
-the test scripts execute the following command(s):
-
-```shell
-% /root/rolltests/sdsc.t 
-```
-

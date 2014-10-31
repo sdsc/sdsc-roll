@@ -7,7 +7,8 @@ build:
 
 install::
 	mkdir -p -m 755 $(ROOT)/$(PKGROOT)
-	cp *.sh $(ROOT)/$(PKGROOT)/
-	cp *.csh $(ROOT)/$(PKGROOT)/
+	install -m 755 *.sh $(ROOT)/$(PKGROOT)
+	install -m 755 *.csh $(ROOT)/$(PKGROOT)
+	mkdir -p -m 755 $(ROOT)/opt/modulefiles
 
 clean::
