@@ -12,9 +12,9 @@ __SDSCDEVEL_ROLL_MK = yes
 #   bind mount it to $(2)
 #   BIND_UMOUNT(1) - macro that produces recipe steps to umount and remove $(1)
 #
-# * DESCRIBE_{CC,CXX,F77,FC,PYTHON,MPI,PKG,BOOST,CUDA,EIGEN,GMP} - variables
-#   that contain recipe steps to extract and echo package information for
-#   incusion in a DESCRIPTION file.
+# * DESCRIBE_{CC,CXX,F77,FC,PYTHON,MPI,PKG,BOOST,CUDA,EIGEN,FFTW,GMP,MKL} -
+#   variables that contain recipe steps to extract and echo package information
+#   for incusion in a DESCRIPTION file.
 #
 # * INSTALL_LICENSE_FILES - variable containing recipe steps to create a dir
 #   in $(ROOT)/$(PKGROOT) to hold package licenses and copy the list of files
@@ -26,8 +26,8 @@ __SDSCDEVEL_ROLL_MK = yes
 # * MODULE_LOAD_PACKAGE(1,2) - macro that produces recipe steps to load
 #   modulefile $(1) and echo the value of environment variable $(2)
 #
-# * MODULE_LOAD_{CC,CXX,F77,FC,PYTHON,MPI,PKG,BOOST,CUDA,EIGEN,GMP} - variables
-#   that contain recipe steps to load specific modulefiles
+# * MODULE_LOAD_{CC,CXX,F77,FC,PYTHON,MPI,PKG,BOOST,CUDA,EIGEN,FFTW,GMP,MKL} -
+#   variables that contain recipe steps to load specific modulefiles
 #
 # * PKGROOT_BIND_{MOUNT,UMOUNT} - variables that contain recipe steps to create
 #   $(PKGROOT) and mount it to $(ROOT)/$(PKGROOT), umount and destroy it.
@@ -77,7 +77,9 @@ DESCRIBE_PKG = echo $(NAME) $(VERSION)
 DESCRIBE_BOOST = echo built with boost $(call GET_MODULE_VERSION, boost)
 DESCRIBE_CUDA = echo built with cuda $(call GET_MODULE_VERSION, cuda)
 DESCRIBE_EIGEN = echo built with eigen $(call GET_MODULE_VERSION, eigen)
+DESCRIBE_FFTW = echo built with fftw $(call GET_MODULE_VERSION, fftw)
 DESCRIBE_GMP = echo built with gmp $(call GET_MODULE_VERSION, gmp)
+DESCRIBE_MKL = echo built with mkl $(call GET_MODULE_VERSION, mkl)
 
 # Macro to extract the version from running $(1) with --version
 GET_EXE_VERSION = \
@@ -114,7 +116,9 @@ MODULE_LOAD_BOOST = $(call MODULE_LOAD_PACKAGE, boost, BOOSTHOME)
 MODULE_LOAD_CMAKE = $(call MODULE_LOAD_PACKAGE, cmake, CMAKEHOME)
 MODULE_LOAD_CUDA = $(call MODULE_LOAD_PACKAGE, cuda, CUDAHOME)
 MODULE_LOAD_EIGEN = $(call MODULE_LOAD_PACKAGE, eigen, EIGENHOME)
+MODULE_LOAD_FFTW = $(call MODULE_LOAD_PACKAGE, fftw, FFTWHOME)
 MODULE_LOAD_GMP = $(call MODULE_LOAD_PACKAGE, gmp, GMPHOME)
+MODULE_LOAD_MKL = $(call MODULE_LOAD_PACKAGE, mkl, MKLHOME)
 
 PKGROOT_BIND_MOUNT = $(call BIND_MOUNT, $(PKGROOT), $(ROOT)/$(PKGROOT))
 
