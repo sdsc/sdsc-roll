@@ -6,7 +6,7 @@ from ScarScript import ScarScript
 
 class addInterface(ScarScript):
   """
-  addInterface - add an interface definition to a node with an IP address
+  addInterface - add a Rocks interface definition to a node with an IP address
                  that matches appropriate octets of its existing interfaces
 
   addInterface [-d -h -q -v] host interface subnet dns [vlanid]

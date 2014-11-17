@@ -8,7 +8,7 @@ from ScarScript import ScarScript
 
 class jobhist(ScarScript):
   """
-  jobhist - report past/present running batch jobs
+  jobhist - Parse torque acounting file to report past/present batch jobs
 
   jobhist [-h -v] [--account=pat] [--at=time] [--csv=y/n] [--earliest=time]
           [--latest=time] [--node=pat] [--user=pat] [file ...]

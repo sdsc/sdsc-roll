@@ -4,7 +4,7 @@ from ScarScript import ScarScript
 
 class lsjobs(ScarScript):
   """
-  Report the users and jobs running on each batch node.
+  Parse pbsnodes output to report the users and jobs running on each batch node.
 
   lsjobs [-h -v] [--property=str] [pattern ...]
 

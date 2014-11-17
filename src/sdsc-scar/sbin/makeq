@@ -6,14 +6,15 @@ from ScarScript import ScarScript
 
 class makeq(ScarScript):
   """
-  makeq - create a new queue
+  makeq - create a new torque queue
 
-  makeq [-d -h -q -v] [--chargerate=float] [--defaultmem=mem]
-        [--defaulttime=time] [--exclusive=y/n] [--group=name] [--maxmem=mem]
-        [--maxtime=time] [--maxuserjobs=int] [--maxuserruns=int] name pattern
+  makeq [-d -h -q -v] [--defaultmem=mem] [--defaulttime=time]
+        [--exclusive=y/n] [--group=name] [--maxmem=mem] [--maxtime=time]
+        [--maxuserjobs=int] [--maxuserruns=int] name pattern
 
-  This script takes the torque/moab/gold actions required to create a new
-  batch queue, optionally reserving it to users in a specified Unix group.
+  This script uses qmgr to create a new batch queue, optionally reserving it
+  for users in a specified Unix group.
+
   Options:
 
     -d
@@ -27,9 +28,6 @@ class makeq(ScarScript):
 
     -v
       Print version, then exit
-
-    --chargerate=float
-      The relative cost of jobs in the queue.  Defaults to 1.0.
 
     --defaultmem=mem
       The default memory submissions to the queue. Defaults to the amount of
@@ -78,16 +76,13 @@ class makeq(ScarScript):
   def __init__(self):
 
     (options, args) = self.parseArgs([
-      "--chargerate:s", "--defaultmem:s", "--defaultnodes:i",
-      "--defaulttime:s", "--exclusive:s", "--group:s", "--maxmem:s",
-      "--maxnodes:i", "--maxtime:s", "--maxuserjobs:i", "--maxuserruns:i"
+      "--defaultmem:s", "--defaultnodes:i", "--defaulttime:s", "--exclusive:s",
+      "--group:s", "--maxmem:s", "--maxnodes:i", "--maxtime:s",
+      "--maxuserjobs:i", "--maxuserruns:i"
     ])
     if len(args) != 2:
       help(makeq)
       sys.exit(1)
-    self.chargerate = "1.0"
-    if options.chargerate:
-      self.chargerate = options.chargerate
     self.defaultmem = options.defaultmem
     self.defaultnodes = options.defaultnodes
     self.defaulttime = "18:00:00"
@@ -183,19 +178,5 @@ class makeq(ScarScript):
         for q in otherQueues:
           self.do('qmgr -c "set node %s properties-=%s"' % (node, q))
       self.do('qmgr -c "set node %s properties+=%s"' % (node, self.queue))
-
-    if self.chargerate != '1.0':
-      # Add a chargerate to the queue
-      self.do(
-        'sudo -u gold goldsh ChargeRate Create Type=NBM Name=QueueName Instance=%s Rate=%s'%
-        (self.queue, self.chargerate)
-      )
-      # Disable moab's allocation management for the queue, since moab doesn't
-      # know about the charge rate
-      self.do('echo CLASSCFG[%s] DISABLEAM=TRUE >> /opt/moab/moab.cfg' %
-              self.queue)
-
-    # restart moab to effect changes
-    self.do("/sbin/service moab restart")
 
 makeq()

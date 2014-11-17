@@ -10,7 +10,7 @@ class leftovers(ScarScript):
   leftovers - a script for finding and cleaning up allocated resources on
   batch nodes
 
-  leftovers [-h -i -k -v] [--exclude pattern] [--include pattern]
+  leftovers [-d -h -i -k -v] [--exclude pattern] [--include pattern]
             [--type=pattern] [pattern ...]
 
   This script searches specified batch hosts for resources (processes, by
@@ -18,20 +18,23 @@ class leftovers(ScarScript):
   Any leftover resources discovered are reported and, if desired, reclaimed.
   Resources that belong to a user w/a UID < 500 are ignored.  Options:
 
+    -d
+      Display the system commands to free resources, but don't execute them.
+
     --exclude
-      Only report resources that do not match pattern
+      Only report resources that do not match pattern.
 
     -h
-      Show this information, then exit
+      Show this information, then exit.
 
     --include
-      Only report resources that match pattern
+      Only report resources that match pattern.
 
     -i
       Interactive.  Like -k, but prompts before each reclamation.
 
     -k
-      Reclaim any discovered leftovers
+      Reclaim any discovered leftovers.
 
     --type
       Include only types of resources that match the given pattern.
@@ -39,7 +42,7 @@ class leftovers(ScarScript):
       'scratch', 'semaphore', and 'tmpfile'.
 
     -v
-      Print version, then exit
+      Print version, then exit.
 
     pattern
       Search only hosts whose names match on of the listed patterns.  By

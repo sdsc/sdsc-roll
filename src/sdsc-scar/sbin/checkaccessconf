@@ -7,7 +7,26 @@ class checkaccessconf(ScarScript):
   """
   checkaccessconf - checks the access.conf file on specified nodes
 
-  checkaccessconf [--fix] [pattern ...]
+  checkaccessconf [-d -h -v] [--fix=y/n] [--nojobs=string] [pattern ...]
+
+  Options:
+
+    -d
+      Display the system commands to fix access.conf, but don't execute them.
+
+    -h
+      Show this information, then exit.
+
+    --fix=y/n
+      Specify whether or not to replace the contents of incorrect
+      access.conf files with the correct values.  Defaults to "n".
+
+    --nojobs=string
+      Specify the set logins/groups that are allowed on nodes when no
+      jobs are running.  Defaults to "root".
+
+    -v
+      Print version, then exit.
 
   """
 
@@ -15,10 +34,15 @@ class checkaccessconf(ScarScript):
   VERSION = 1.0
 
   def __init__(self):
-    (options, args) = self.parseArgs(['--fix'])
+    (options, args) = self.parseArgs(['--fix:s', '--nojobs:s'])
     if len(args) == 0:
       args.append('.')
-    self.fix = options.fix
+    self.fix = False
+    if options.fix:
+      self.fix = options.fix == 'y'
+    self.nojobs = 'root'
+    if options.nojobs:
+      self.nojobs = options.nojobs
 
     nodeJobs = {}
     for pat in args:
@@ -31,17 +55,17 @@ class checkaccessconf(ScarScript):
       for job in nodeJobs[node]:
         if job.find('/') > 0:
           usersAllowedOnHost += ' %s' % job.split('/')[1]
-      access = '-:ALL EXCEPT root (tscc-admin)%s:ALL' % usersAllowedOnHost
+      correct = '-:ALL EXCEPT %s%s:ALL' % (self.nojobs, usersAllowedOnHost)
       command = self.ssh(node, "cat %s" % checkaccessconf.ACCESS_PATH)
       output = commands.getoutput(command).split("\n")[0]
-      if output == access:
-        print "%s: confirmed '%s'" % (node, access)
+      if output == correct:
+        print "%s: confirmed '%s'" % (node, correct)
       elif not self.fix:
-        print "%s: is '%s' should be '%s'" % (node, output, access)
+        print "%s: is '%s' should be '%s'" % (node, output, correct)
       else:
-        print "%s: changing '%s' to '%s'" % (node, output, access)
+        print "%s: changing '%s' to '%s'" % (node, output, correct)
         command = self.ssh(
-          node, 'echo "%s" > %s' % (access, checkaccessconf.ACCESS_PATH)
+          node, 'echo "%s" > %s' % (correct, checkaccessconf.ACCESS_PATH)
         )
         self.do(command)
 
