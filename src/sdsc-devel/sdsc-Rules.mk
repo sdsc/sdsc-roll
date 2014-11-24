@@ -12,7 +12,7 @@ __SDSCDEVEL_ROLL_MK = yes
 #   bind mount it to $(2)
 #   BIND_UMOUNT(1) - macro that produces recipe steps to umount and remove $(1)
 #
-# * DESCRIBE_{CC,CXX,F77,FC,PYTHON,MPI,PKG,BOOST,CUDA,EIGEN,FFTW,GMP,MKL,R} -
+# * DESCRIBE_{CC,CXX,F77,FC,PYTHON,MPI,PKG,BOOST,CUDA,EIGEN,FFTW,GMP,HDF5,LAPACK,MKL,NETCDF,R} -
 #   variables that contain recipe steps to extract and echo package information
 #   for incusion in a DESCRIPTION file.
 #
@@ -26,7 +26,7 @@ __SDSCDEVEL_ROLL_MK = yes
 # * MODULE_LOAD_PACKAGE(1,2) - macro that produces recipe steps to load
 #   modulefile $(1) and echo the value of environment variable $(2)
 #
-# * MODULE_LOAD_{CC,CXX,F77,FC,PYTHON,MPI,PKG,BOOST,CUDA,EIGEN,FFTW,GMP,MKL,R} -
+# * MODULE_LOAD_{CC,CXX,F77,FC,PYTHON,MPI,PKG,BOOST,CUDA,EIGEN,FFTW,GMP,HDF5,LAPACK,MKL,NETCDF,R} -
 #   variables that contain recipe steps to load specific modulefiles
 #
 # * PKGROOT_BIND_{MOUNT,UMOUNT} - variables that contain recipe steps to create
@@ -79,7 +79,10 @@ DESCRIBE_CUDA = echo built with cuda $(call GET_MODULE_VERSION, cuda)
 DESCRIBE_EIGEN = echo built with eigen $(call GET_MODULE_VERSION, eigen)
 DESCRIBE_FFTW = echo built with fftw $(call GET_MODULE_VERSION, fftw)
 DESCRIBE_GMP = echo built with gmp $(call GET_MODULE_VERSION, gmp)
+DESCRIBE_HDF5 = echo built with hdf5 $(call GET_MODULE_VERSION, hdf5)
+DESCRIBE_LAPACK = echo built with lapack $(call GET_MODULE_VERSION, lapack)
 DESCRIBE_MKL = echo built with mkl $(call GET_MODULE_VERSION, mkl)
+DESCRIBE_NETCDF = echo built with netcdf $(call GET_MODULE_VERSION, netcdf)
 DESCRIBE_R = echo built with R $(call GET_MODULE_VERSION, R)
 
 # Macro to extract the version from running $(1) with --version
@@ -119,7 +122,10 @@ MODULE_LOAD_CUDA = $(call MODULE_LOAD_PACKAGE, cuda, CUDAHOME)
 MODULE_LOAD_EIGEN = $(call MODULE_LOAD_PACKAGE, eigen, EIGENHOME)
 MODULE_LOAD_FFTW = $(call MODULE_LOAD_PACKAGE, fftw, FFTWHOME)
 MODULE_LOAD_GMP = $(call MODULE_LOAD_PACKAGE, gmp, GMPHOME)
+MODULE_LOAD_HDF5 = $(call MODULE_LOAD_PACKAGE, hdf5, HDF5HOME)
+MODULE_LOAD_LAPACK = $(call MODULE_LOAD_PACKAGE, lapack, LAPACKHOME)
 MODULE_LOAD_MKL = $(call MODULE_LOAD_PACKAGE, mkl, MKLHOME)
+MODULE_LOAD_NETCDF = $(call MODULE_LOAD_PACKAGE, netcdf, NETCDFHOME)
 MODULE_LOAD_R = $(call MODULE_LOAD_PACKAGE, R, RHOME)
 
 PKGROOT_BIND_MOUNT = $(call BIND_MOUNT, $(PKGROOT), $(ROOT)/$(PKGROOT))
