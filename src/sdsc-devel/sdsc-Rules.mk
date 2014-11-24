@@ -91,8 +91,8 @@ GET_MODULE_VERSION = \
   `module display $(1) 2>&1 | perl -ne 'print($$1) and exit if m/version\D*(\d+(\.\d+)*)/i'`
 
 INSTALL_LICENSE_FILES = \
-  mkdir -p -m 755 $(ROOT)/$(PKGROOT)/license-info; \
-  cp $(LICENSE_FILES) $(ROOT)/$(PKGROOT)/license-info
+  mkdir -p -m 755 $(ROOT)/$(PKGROOT)/license-info/$(NAME); \
+  cp $(LICENSE_FILES) $(ROOT)/$(PKGROOT)/license-info/$(NAME)/
 
 MODULE_LOAD_COMPILER = \
   module load $(1) || true; \
