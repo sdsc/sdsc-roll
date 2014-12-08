@@ -12,6 +12,10 @@ __SDSCDEVEL_ROLL_MK = yes
 #   bind mount it to $(2)
 #   BIND_UMOUNT(1) - macro that produces recipe steps to umount and remove $(1)
 #
+# * CHECK_LICENSE_FILES - variable containing recipe steps to check the files
+#   in license-files/ against the same files in $(SOURCE_DIR).  Exits with
+#   failure if any of the files differ.
+#
 # * DESCRIBE_{CC,CXX,F77,FC,PYTHON,MPI,PKG,BOOST,CUDA,EIGEN,FFTW,GMP,HDF5,LAPACK,MKL,NETCDF,R} -
 #   variables that contain recipe steps to extract and echo package information
 #   for incusion in a DESCRIPTION file.
@@ -62,6 +66,12 @@ endif
 
 BIND_MOUNT = mkdir -p -m 755 $(1) || true; mount --bind $(2) $(1)
 BIND_UMOUNT = umount $(1); rmdir -p $(1) || true
+
+CHECK_LICENSE_FILES = \
+  for F in `find license-files -mindepth 1`; do \
+    echo Checking $$F for changes; \
+    /usr/bin/cmp $$F `echo $$F | sed 's/license-files/$(SOURCE_DIR)/'` || exit 2; \
+  done
 
 DESCRIBE_CC = echo built with $(CC) $(call GET_EXE_VERSION, $(CC))
 DESCRIBE_CXX = echo built with $(CXX) $(call GET_EXE_VERSION, $(CXX))
