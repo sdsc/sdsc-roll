@@ -21,8 +21,8 @@ __SDSCDEVEL_ROLL_MK = yes
 #   for incusion in a DESCRIPTION file.
 #
 # * INSTALL_LICENSE_FILES - variable containing recipe steps to create a dir
-#   in $(ROOT)/$(PKGROOT) to hold package licenses and copy the list of files
-#   in $(LICENSE_FILES) into it
+#   in $(ROOT)/$(PKGROOT) to hold package licenses and copy the contents of
+#   license-files/ into it
 #
 # * MODULE_LOAD_COMPILER(1,2) - macro that produces recipe steps to load
 #   modulefile $(1) and run exe $(2) to report its version
@@ -68,7 +68,7 @@ BIND_MOUNT = mkdir -p -m 755 $(1) || true; mount --bind $(2) $(1)
 BIND_UMOUNT = umount $(1); rmdir -p $(1) || true
 
 CHECK_LICENSE_FILES = \
-  for F in `find license-files -mindepth 1`; do \
+  for F in `find license-files -mindepth 1 -type f`; do \
     echo Checking $$F for changes; \
     /usr/bin/cmp $$F `echo $$F | sed 's/license-files/$(SOURCE_DIR)/'` || exit 2; \
   done
@@ -105,7 +105,7 @@ GET_MODULE_VERSION = \
 
 INSTALL_LICENSE_FILES = \
   mkdir -p -m 755 $(ROOT)/$(PKGROOT)/license-info/$(NAME); \
-  cp $(LICENSE_FILES) $(ROOT)/$(PKGROOT)/license-info/$(NAME)/
+  cp -r license-files/* $(ROOT)/$(PKGROOT)/license-info/$(NAME)/
 
 MODULE_LOAD_COMPILER = \
   module load $(1) || true; \
