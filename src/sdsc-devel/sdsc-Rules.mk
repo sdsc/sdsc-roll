@@ -68,10 +68,14 @@ BIND_MOUNT = mkdir -p -m 755 $(1) || true; mount --bind $(2) $(1)
 BIND_UMOUNT = umount $(1); rmdir -p $(1) || true
 
 CHECK_LICENSE_FILES = \
-  for F in `find license-files -mindepth 1 -type f`; do \
-    echo Checking $$F for changes; \
-    /usr/bin/cmp $$F `echo $$F | sed 's/license-files/$(SOURCE_DIR)/'` || exit 2; \
-  done
+  if test -d license-files; then \
+    for F in `find license-files -mindepth 1 -type f`; do \
+      echo Checking $$F for changes; \
+      /usr/bin/cmp $$F `echo $$F | sed 's/license-files/$(SOURCE_DIR)/'` || exit 2; \
+    done; \
+  else \
+    echo WARNING: no license-files directory found; \
+  fi
 
 DESCRIBE_CC = echo built with $(CC) $(call GET_EXE_VERSION, $(CC))
 DESCRIBE_CXX = echo built with $(CXX) $(call GET_EXE_VERSION, $(CXX))
@@ -104,8 +108,12 @@ GET_MODULE_VERSION = \
   `module display $(1) 2>&1 | perl -ne 'print($$1) and exit if m/version\D*(\d+(\.\d+)*)/i'`
 
 INSTALL_LICENSE_FILES = \
-  mkdir -p -m 755 $(ROOT)/$(PKGROOT)/license-info/$(NAME); \
-  cp -r license-files/* $(ROOT)/$(PKGROOT)/license-info/$(NAME)/
+  if test -d license-files; then \
+    mkdir -p -m 755 $(ROOT)/$(PKGROOT)/license-info/$(NAME); \
+    cp -r license-files/* $(ROOT)/$(PKGROOT)/license-info/$(NAME)/; \
+  else \
+    echo WARNING: no license-files directory found; \
+  fi
 
 MODULE_LOAD_COMPILER = \
   module load $(1) || true; \
