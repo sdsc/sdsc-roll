@@ -61,5 +61,4 @@
 
 compile_and_install sdsc-devel
 compile_and_install sdsc-etc-profile
-compile_and_install sdsc-scar
 
