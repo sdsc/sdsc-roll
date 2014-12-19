@@ -13,7 +13,6 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 
 <package>sdsc-devel</package>
 <package>sdsc-etc-profile</package>
-<package>sdsc-scar</package>
 <package>sdsc-roll-test</package>
 
 </kickstart>

@@ -31,9 +31,6 @@ SKIP: {
   like($ENV{PATH}, qr#/opt/sdsc/bin#, '/opt/sdsc/bin in PATH');
   is($ENV{SDSCHOME}, '/opt/sdsc', 'SDSCHOME set');
   is($ENV{SDSCDEVEL}, '/opt/sdsc/devel', 'SDSCDEVEL set');
-  ok(-f '/opt/sdsc/bin/lsjobs', 'scar bin installed');
-  ok(-f '/opt/sdsc/lib/ScarScript.py', 'scar lib installed');
-  ok(-f '/opt/sdsc/sbin/userhist', 'scar sbin installed');
 
 }
 
