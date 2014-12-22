@@ -89,7 +89,8 @@ class PackageVersionCheck():
         dirpat, dirformat
       )
       latestversion = self.findlatestversion(
-        commands.getoutput("/usr/bin/curl '%s' 2>&1" % url), urlpat, urlformat
+        commands.getoutput("/usr/bin/curl --insecure '%s' 2>&1" % url),
+        urlpat, urlformat
       )
       if currentversion == '':
         if packageinfo.has_option(package, 'dirfail'):
