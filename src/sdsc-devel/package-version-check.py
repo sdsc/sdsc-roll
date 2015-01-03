@@ -1,13 +1,61 @@
 #!/bin/env python
 
 import commands
+import os
 import re
 import sys
 import ConfigParser
 
 class PackageVersionCheck():
   """
-  PackageVersionCheck - Check for updated versions of roll software packages.
+  package-version-check.py - Check for new versions of roll software packages.
+
+  package-version-check.py [-h] [--ini=path] [pattern ...]
+
+    -h
+      Print this text, then exit.
+
+    --ini=path
+      Path to ini file (see ConfigParser doc).  If not specified, the script
+      looks for package-version-check.ini in the local and $HOME dirs.
+
+    pattern ...
+      List of patterns to match against paths to local package dirs.
+      Defaults to '.' (i.e., matches all package dirs).
+
+  Each section of the ini file has the name of a software package; within
+  each section, these options are recognized:
+
+    dir
+      Path to the package directory; defaults to ${package}-roll/src/${package}
+
+    dirformat
+      Format for converting the groups of the dir match into a version.
+      Defaults to $1.
+
+    dirpat
+      Regular expression that matches the text in version.mk that contains
+      the local package version, where the version itself is contained within
+      the first group.  Defaults to "\bVERSION\s*=\s*(\S+)".
+
+    note
+      General notes about the package to include in the script output.
+
+    url
+      URL to the web page that contains a reference to the package's latest
+      version.  Required.
+
+    urlformat
+      Format for converting the groups of the URL match into a version.
+      Defaults to $1.
+
+    urlpat
+      Regular expression that matches the text on the web page that contains
+      the package version, where the version itself is contained within the
+      first group.  Defaults to "$package-(\d+(?:\.\d+)*)\.(?:tar.*|tgz|zip),
+      i.e., the package name followed by a dash, a package version consisting
+      of one or more period-separated sets of digits, then a trailing period
+      and compression extension.
   """
 
   monthNumber = {
@@ -53,23 +101,43 @@ class PackageVersionCheck():
 
   def __init__(self):
 
+    iniPath = None
+    packagePat = None
+    for arg in sys.argv[1:]:
+      if arg == '-h':
+        help(PackageVersionCheck)
+        sys.exit(0)
+      elif arg.startswith('--ini='):
+        iniPath=arg[6:]
+      else:
+        if packagePat:
+          packagePat += '|' + arg
+        else:
+          packagePat = arg
+
+    if not iniPath:
+      iniPath = os.environ['HOME'] + '/package-version-check.ini'
+      if os.path.isfile('./package-version-check.ini'):
+        iniPath = './package-version-check.ini'
+
+    if not os.path.isfile(iniPath):
+      print 'ini file %s not found' % iniPath
+      sys.exit(2)
+
     packageinfo = ConfigParser.ConfigParser()
-    packageinfo.read('package-version-check.ini')
+    packageinfo.read(iniPath)
 
-    if (len(sys.argv) > 1):
-      packagelist = sys.argv[1:]
-    else:
-      packagelist = sorted(packageinfo.sections())
+    if not packagePat:
+      packagePat = '.'
 
-    for package in packagelist:
-
-      if not packageinfo.has_section(package):
-        print "%s: Not listed in package file" % package
-        continue
+    for package in sorted(packageinfo.sections()):
 
       dir = '%s-roll/src/%s' % (package, package)
       if packageinfo.has_option(package, 'dir'):
         dir = packageinfo.get(package, 'dir')
+      if not re.search(packagePat, dir):
+        continue
+
       dirpat = r'\bVERSION\s*=\s*(\S+)'
       if packageinfo.has_option(package, 'dirpat'):
         dirpat = packageinfo.get(package, 'dirpat')
@@ -88,28 +156,22 @@ class PackageVersionCheck():
         commands.getoutput('/bin/cat %s/version.mk 2>&1' % dir),
         dirpat, dirformat
       )
+      if currentversion == '':
+        currentversion = 'unknown'
       latestversion = self.findlatestversion(
         commands.getoutput("/usr/bin/curl --insecure '%s' 2>&1" % url),
         urlpat, urlformat
       )
-      if currentversion == '':
-        if packageinfo.has_option(package, 'dirfail'):
-          currentversion = packageinfo.get(package, 'dirfail')
-        else:
-          currentversion = 'unknown'
       if latestversion == '':
-        if packageinfo.has_option(package, 'urlfail'):
-          latestversion = packageinfo.get(package, 'urlfail')
-        else:
-          latestversion = 'unknown'
+        latestversion = 'unknown'
 
       note = ''
       if packageinfo.has_option(package, 'note'):
         note = '; note: %s' % packageinfo.get(package, 'note')
 
       if self.versioncmp(currentversion, latestversion) == 0:
-        print "%s: local version '%s' is up to date%s" % (package, currentversion, note)
+        print "%s/%s: local version '%s' is up to date%s" % (dir, package, currentversion, note)
       else:
-        print "%s: local version '%s'; latest version '%s'%s" % (package, currentversion, latestversion, note)
+        print "%s/%s: local version '%s'; latest version '%s'%s" % (dir, package, currentversion, latestversion, note)
 
 PackageVersionCheck()
