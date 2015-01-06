@@ -135,7 +135,7 @@ class PackageVersionCheck():
       dir = '%s-roll/src/%s' % (package, package)
       if packageinfo.has_option(package, 'dir'):
         dir = packageinfo.get(package, 'dir')
-      if not re.search(packagePat, dir):
+      if not re.search(packagePat, dir) and not re.search(packagePat, package):
         continue
 
       dirpat = r'\bVERSION\s*=\s*(\S+)'
