@@ -25,7 +25,12 @@ SKIP: {
   skip 'sdsc not installed', 11 if ! $isInstalled;
   ok(-f '/opt/sdsc/devel/Rules.mk', 'devel files installed');
   ok(-f '/etc/profile.d/sdsc.sh', '/etc/profile files installed');
-  like($ENV{MODULEPATH}, qr#/opt/modulefiles/\w+#, '/opt/modulefiles in MODULEPATH');
+  SKIP: {
+    skip 'no modulefiles installed', 1 if ! -d '/opt/modulefiles';
+    $output = `ls /opt/modulefiles`;
+    skip 'no modulefiles installed', 1 if $output !~ /[a-z]/;
+    like($ENV{MODULEPATH}, qr#/opt/modulefiles/\w+#, '/opt/modulefiles in MODULEPATH');
+  }
   like($ENV{PYTHONPATH}, qr#/opt/sdsc/lib#, '/opt/sdsc/lib in PYTHONPATH');
   like($ENV{PATH}, qr#/opt/sdsc/sbin#, '/opt/sdsc/sbin in PATH');
   like($ENV{PATH}, qr#/opt/sdsc/bin#, '/opt/sdsc/bin in PATH');
