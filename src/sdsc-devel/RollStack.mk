@@ -29,7 +29,7 @@ __SDSCDEVEL_ROLLSTACK_MK = yes
 #
 # ROLLDEF uses a default value for any of these that are not specified in the
 # argument list, taken from the make vars DEFAULT_GET, DEFAULT_ROLLCOMPILER,
-# etc.  These default vars can be defined before including RollSet.mk;
+# etc.  These default vars can be defined before including RollStack.mk;
 # otherwise, their values are
 #
 # * DEFAULT_GET = (empty)
@@ -47,7 +47,7 @@ __SDSCDEVEL_ROLLSTACK_MK = yes
 # %-distclean - make the roll's distclean target
 # %-install - install the rpms produced by the roll build.  No post sections
 #   from the roll's node file(s) are executed.
-# %-prereq - build and install any prerequisite rolls
+# %-prereqs - build and install any prerequisite rolls
 # %-roll - use the roll's GET value to fetch the roll source
 # %-test - run /root/rolltests/%.t
 # %-uninstall - uninstall the rpms produced by the roll build.
@@ -64,7 +64,7 @@ ifndef DEFAULT_ROLLCOMPILER
   DEFAULT_ROLLCOMPILER = gnu
 endif
 ifndef DEFAULT_ROLLMPI
-  DEFAULT_ROLLMPI = 
+  DEFAULT_ROLLMPI = rocks-openmpi
 endif
 ifndef DEFAULT_ROLLOPTS
   DEFAULT_ROLLOPTS =
@@ -92,51 +92,79 @@ ROLLDEF = \
   $(if $8,$(eval $(1)_$(8))) \
   $(if $9,$(eval $(1)_$(9))) \
   $(eval $(1)_MAKE = make $(if $($(1)_ROLLCOMPILER),ROLLCOMPILER="$($(1)_ROLLCOMPILER)") $(if $($(1)_ROLLMPI),ROLLMPI="$($(1)_ROLLMPI)") $(if $($(1)_ROLLPY),ROLLPY="$($(1)_ROLLPY)") $(if $($(1)_ROLLOPTS),ROLLOPTS="$($(1)_ROLLOPTS)")) \
-  $(foreach prereq,$(subst gnu,gnucompiler,$($(1)_ROLLCOMPILER)) $(patsubst %,mpi,$(subst rocks-openmpi,,$($(1)_ROLLMPI))) $($(1)_PREREQS),$(if $(filter $(prereq),$(ALL_PREREQS)),,$(eval ALL_PREREQS += $(prereq))))
+  $(eval $(1)_PREREQS += $(subst gnu,gnucompiler,$($(1)_ROLLCOMPILER)) $(patsubst %,mpi,$(subst rocks-openmpi,,$($(1)_ROLLMPI))) $(patsubst %,python,$($(1)_ROLLPY))) \
+  $(foreach prereq,$($(1)_PREREQS),$(if $(filter $(prereq),$(ALL_PREREQS)),,$(eval ALL_PREREQS += $(prereq))))
 
-%-build:
-	$(MAKE) %-roll/RPMS/x86_64
+THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 
+%-build: %-roll/RPMS/TIMESTAMP
+	
 %-distclean:
 	if test -d $*-roll; then \
 	  cd $*-roll; \
-	  ($(*)_MAKE) distclean; \
+	  $($(*)_MAKE) distclean; \
 	fi
 
 %-install: /root/rolltests/%.t
 	
 
-%-prereq:
+%-prereqs:
 	for PREREQ in $(patsubst %,/root/rolltests/%.t,$($(*)_PREREQS)); do \
-	  $(MAKE) $$PREREQ; \
+	  $(MAKE) -f $(THIS_MAKEFILE) $$PREREQ; \
 	done
 
 %-purge:
-	/bin/rm -fr %-roll
+	/bin/rm -fr $*-roll
 
 %-roll:
 	$($(*)_GET)
 
-%-roll/RPMS/x86_64: %-prereq
-	$(MAKE) $*-roll
+%-roll/RPMS/TIMESTAMP:
+	$(MAKE) -f $(THIS_MAKEFILE) $*-prereqs
+	$(MAKE) -f $(THIS_MAKEFILE) $*-roll
 	cd $*-roll; \
-	$(MAKE) ROLLCOMPILER="$($(*)_ROLLCOMPILER)" ROLLMPI="$($(*)_ROLLMPI)" ROLLPY="$(($*)_ROLLPY)" ROLLOPTS="$($(*)_ROLLOPTS)" > build.log 2>&1
+	$($(*)_MAKE) > build.log 2>&1
+	if find $*-roll -name \*.iso; then \
+	  touch $@; \
+	fi
 
-/root/rolltests/%.t: %-roll/RPMS/x86_64
-	-$(MAKE) $*-uninstall
-	rpm -i --nodeps $*-roll/RPMS/noarch/*.rpm $*-roll/RPMS/x86_64/*.rpm
+%-checknodes: %-roll/RPMS/TIMESTAMP
+	packs=`/bin/cat $*-roll/nodes/* | \
+	       /usr/bin/perl -n \
+	         -e 'next unless ($$p) = /<package>\s*([^\s<]+)/;' \
+	         -e 'map($$p =~ s/((\S*)COMPILERNAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLCOMPILER)"));' \
+	         -e 'map($$p =~ s/((\S*)MPINAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLMPI)"));' \
+	         -e '$$p =~ s/(\S*)(COMPILER|MPI)NAME(\S*)//g;' \
+	         -e 'print "$$p ";' | sort | uniq`; \
+	built=`ls $*-roll/RPMS/*/*.rpm`; \
+	for F in $$packs roll-$*-kickstart; do \
+	  built=`echo $$built | sed "s/[^ ]*\/$$F-[0-9][^ ]* *//"`; \
+	done; \
+	if test -n "$$built"; then \
+	  echo "error: rpm(s) '$$built' not referenced in node file(s)"; \
+	  exit 2; \
+	fi
+
+/root/rolltests/%.t: %-roll/RPMS/TIMESTAMP
+	$(MAKE) -f $(THIS_MAKEFILE) $*-checknodes
+	rpm -i --nodeps $*-roll/RPMS/*/*.rpm
+	touch $@
 
 %-test: /root/rolltests/%.t
 	cd ~$($(*)_USER); \
 	su -c "$<" $($(*)_USER)
 
 %-uninstall:
-	if test -d $*-roll/RPMS/noarch; then \
-	  rpm -e --nodeps `ls $*-roll/RPMS/noarch/*.rpm | sed -e 's/.*\///' -e 's/-[0-9].*//'`; \
-	fi
-	if test -d $*-roll/RPMS/x86_64; then \
-	  rpm -e --nodeps `ls $*-roll/RPMS/x86_64/*.rpm | sed -e 's/.*\///' -e 's/-[0-9].*//'`; \
-	fi
+	packs=`/bin/cat $*-roll/nodes/* | \
+	       /usr/bin/perl -n \
+	         -e 'next unless ($$p) = /<package>\s*([^\s<]+)/;' \
+	         -e 'map($$p =~ s/((\S*)COMPILERNAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLCOMPILER)"));' \
+	         -e 'map($$p =~ s/((\S*)MPINAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLMPI)"));' \
+	         -e '$$p =~ s/(\S*)(COMPILER|MPI)NAME(\S*)//g;' \
+	         -e 'print "$$p ";' | sort | uniq`; \
+	for F in $$packs roll-$*-kickstart; do \
+	  rpm -e --nodeps $$F; \
+	done
 
 %-vars:
 	@echo $(*)_ROLLCOMPILER '$($(*)_ROLLCOMPILER)'
@@ -147,5 +175,19 @@ ROLLDEF = \
 	@echo $(*)_PREREQS '$($(*)_PREREQS)'
 	@echo $(*)_MAKE '$($(*)_MAKE)'
 	@echo ALL_PREREQS $(ALL_PREREQS)
+
+%-packages: %-roll
+	packs=`/bin/cat $*-roll/nodes/* | \
+	       /usr/bin/perl -n \
+	         -e 'next unless ($$p) = /<package>\s*([^\s<]+)/;' \
+	         -e 'map($$p =~ s/((\S*)COMPILERNAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLCOMPILER)"));' \
+	         -e 'map($$p =~ s/((\S*)MPINAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLMPI)"));' \
+	         -e '$$p =~ s/(\S*)(COMPILER|MPI)NAME(\S*)//g;' \
+	         -e 'print "$$p ";'`; \
+	echo $$packs
+
+# Tell gmake not to delete any targets when created as intermediates
+.PRECIOUS: %-roll %-roll/RPMS/TIMESTAMP /root/rolltests/%.t
+	
 
 endif # __SDSCDEVEL_ROLLSTACK_MK
