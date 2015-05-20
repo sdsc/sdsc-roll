@@ -141,8 +141,7 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	  built=`echo $$built | sed "s/[^ ]*\/$$F-[0-9][^ ]* *//"`; \
 	done; \
 	if test -n "$$built"; then \
-	  echo "error: rpm(s) '$$built' not referenced in node file(s)"; \
-	  exit 2; \
+	  echo "WARNING: rpm(s) '$$built' not referenced in node file(s)"; \
 	fi
 
 /root/rolltests/%.t: %-roll/RPMS/TIMESTAMP
