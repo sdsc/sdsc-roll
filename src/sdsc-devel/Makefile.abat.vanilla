@@ -1,0 +1,67 @@
+# URL used for roll git clone
+GIT_URL = https://github.com/sdsc/$(1)-roll.git
+
+# Overrides of RollStack.mk default values
+DEFAULT_GET = git clone $(GIT_URL)
+DEFAULT_ROLLOPTS =
+DEFAULT_USER = jhayes
+
+# ROLL{COMPILER,MPI} values for multi-{compiler,mpi} rolls
+MULTI_COMPILER = gnu
+MULTI_MPI = rocks-openmpi
+
+amber_ROLLOPTS = $(DEFAULT_ROLLOPTS) cuda
+chemistry_ROLLOPTS = $(DEFAULT_ROLLOPTS) cuda
+
+include $(SDSCDEVEL)/RollStack.mk
+include $(SDSCDEVEL)/CommonRolls.mk
+
+LOG_FILE = $(shell /bin/date +%F-%T-$(THIS_MAKEFILE).log)
+
+all:
+	/bin/rm -f $(LOG_FILE)
+	for F in sdsc $(ALL_ROLLS); do \
+	  $(MAKE) LOG_FILE=$(LOG_FILE) -f $(THIS_MAKEFILE) $$F-build-and-test; \
+	done
+
+clean:
+	for F in $(ALL_ROLLS); do \
+	  $(MAKE) -f $(THIS_MAKEFILE) $$F-uninstall || true; \
+	  $(MAKE) -f $(THIS_MAKEFILE) $$F-purge || true; \
+	done
+	
+%-build-and-test:
+	/bin/echo === START $(*) `/bin/date +%F-%T` >> $(LOG_FILE)
+	export prereq_ok=1; \
+	for F in $($(*)_PREREQS); do \
+	  /bin/echo === PREREQ $(*) $$F `/bin/date +%F-%T` >> $(LOG_FILE); \
+	  $(MAKE) -f $(THIS_MAKEFILE) LOG_FILE="$(LOG_FILE)" $$F-build-and-test; \
+	  if ! /bin/find $$F-roll -name \*.iso; then \
+	    /bin/echo === PREREQ FAIL $(*) $$F `/bin/date +%F-%T` >> $(LOG_FILE); \
+	    export prereq_ok=0; \
+	    break; \
+	  fi; \
+	  /bin/echo === PREREQ OK $(*) $$F `/bin/date +%F-%T` >> $(LOG_FILE); \
+	done; \
+	if test $${prereq_ok} -eq 0; then \
+	  /bin/echo === ABORT $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
+	  exit 2; \
+	fi
+	if grep -q "BUILD $(*)" $(LOG_FILE); then \
+	  /bin/echo === BUILD $(*) REDUNDANT; \
+	else \
+	  /bin/echo === BUILD $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
+	  $(MAKE) -f $(THIS_MAKEFILE) $(*)-build; \
+	  if ! /bin/find $(*)-roll -name \*.iso; then \
+	    /bin/echo === BUILD FAIL $(*) `/bin/date +%F-%T`; \
+	    exit 2; \
+	  fi; \
+	  /bin/echo === BUILD OK $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
+	  /bin/echo === TEST $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
+	  $(MAKE) -f $(THIS_MAKEFILE) $(*)-test >> $(LOG_FILE) 2>&1; \
+	  if test $$? -eq 0; then \
+	    /bin/echo === TEST OK $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
+	  else \
+	    /bin/echo === TEST FAIL $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
+	  fi; \
+	fi
