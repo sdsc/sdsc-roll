@@ -63,8 +63,8 @@ ALL_ROLLS = $(sort $(DEFAULT_COMPILER_ROLLS) $(MULTI_COMPILER_ROLLS) $(NO_COMPIL
 # A couple of rolls that are known to have build failures w/the pgi compilers
 NO_PGI_ROLLS = boost trilinos
 
-# Rolls that require a license to use and so are not available from github
-LICENSED_ROLLS = ddt gaussian idl intel pgi stata vasp
+# Rolls not available from github, generally because of a paid license
+RESTRICTED_ROLLS = amber ddt gaussian idl intel pgi stata vasp
 
 # gmake's handling of line continuations makes it difficult to format call
 # invocations readably.  Placing the call into a variable to be passed to eval
