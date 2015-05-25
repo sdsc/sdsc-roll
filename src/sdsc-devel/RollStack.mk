@@ -47,7 +47,9 @@ __SDSCDEVEL_ROLLSTACK_MK = yes
 # %-distclean - make the roll's distclean target
 # %-install - install the rpms produced by the roll build.  No post sections
 #   from the roll's node file(s) are executed.
+# %-packages - display the packages installed by the roll--for debugging.
 # %-prereqs - build and install any prerequisite rolls
+# %-purge - remove the roll source
 # %-roll - use the roll's GET value to fetch the roll source
 # %-test - run /root/rolltests/%.t
 # %-uninstall - uninstall the rpms produced by the roll build.
@@ -91,7 +93,7 @@ ROLLDEF = \
   $(if $7,$(eval $(1)_$(7))) \
   $(if $8,$(eval $(1)_$(8))) \
   $(if $9,$(eval $(1)_$(9))) \
-  $(eval $(1)_MAKE = make $(if $($(1)_ROLLCOMPILER),ROLLCOMPILER="$($(1)_ROLLCOMPILER)") $(if $($(1)_ROLLMPI),ROLLMPI="$($(1)_ROLLMPI)") $(if $($(1)_ROLLPY),ROLLPY="$($(1)_ROLLPY)") $(if $($(1)_ROLLOPTS),ROLLOPTS="$($(1)_ROLLOPTS)")) \
+  $(eval $(1)_MAKE = $(MAKE) $(if $($(1)_ROLLCOMPILER),ROLLCOMPILER="$($(1)_ROLLCOMPILER)") $(if $($(1)_ROLLMPI),ROLLMPI="$($(1)_ROLLMPI)") $(if $($(1)_ROLLPY),ROLLPY="$($(1)_ROLLPY)") $(if $($(1)_ROLLOPTS),ROLLOPTS="$($(1)_ROLLOPTS)")) \
   $(eval $(1)_PREREQS += $(subst gnu,gnucompiler,$($(1)_ROLLCOMPILER)) $(patsubst %,mpi,$(subst rocks-openmpi,,$($(1)_ROLLMPI))) $(patsubst %,python,$($(1)_ROLLPY))) \
   $(foreach prereq,$($(1)_PREREQS),$(if $(filter $(prereq),$(ALL_PREREQS)),,$(eval ALL_PREREQS += $(prereq))))
 
@@ -146,12 +148,12 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 
 /root/rolltests/%.t: %-roll/RPMS/TIMESTAMP
 	$(MAKE) -f $(THIS_MAKEFILE) $*-checknodes
-	rpm -i --nodeps $*-roll/RPMS/*/*.rpm
+	rpm -i --nodeps $*-roll/RPMS/*/*.rpm || true
 	touch $@
 
 %-test: /root/rolltests/%.t
 	cd ~$($(*)_USER); \
-	su -c "$<" $($(*)_USER)
+	su -c "$< Compute" $($(*)_USER)
 
 %-uninstall:
 	packs=`/bin/cat $*-roll/nodes/* | \
@@ -159,10 +161,11 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	         -e 'next unless ($$p) = /<package>\s*([^\s<]+)/;' \
 	         -e 'map($$p =~ s/((\S*)COMPILERNAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLCOMPILER)"));' \
 	         -e 'map($$p =~ s/((\S*)MPINAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLMPI)"));' \
-	         -e '$$p =~ s/(\S*)(COMPILER|MPI)NAME(\S*)//g;' \
+	         -e 'map($$p =~ s/((\S*)PYVERSION(\S*))/$${2}2.7$$3 $$1/g, split(/\s+/, "$($(*)_ROLLMPI)"));' \
+	         -e '$$p =~ s/(\S*)(COMPILERNAME|MPINAME|PYVERSION)(\S*)//g;' \
 	         -e 'print "$$p ";' | sort | uniq`; \
 	for F in $$packs roll-$*-kickstart; do \
-	  rpm -e --nodeps $$F; \
+	  rpm -e --nodeps $$F > /dev/null 2>&1 || true; \
 	done
 
 %-vars:
@@ -181,7 +184,8 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	         -e 'next unless ($$p) = /<package>\s*([^\s<]+)/;' \
 	         -e 'map($$p =~ s/((\S*)COMPILERNAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLCOMPILER)"));' \
 	         -e 'map($$p =~ s/((\S*)MPINAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLMPI)"));' \
-	         -e '$$p =~ s/(\S*)(COMPILER|MPI)NAME(\S*)//g;' \
+	         -e 'map($$p =~ s/((\S*)PYVERSION(\S*))/$${2}2.7$$3 $$1/g, split(/\s+/, "$($(*)_ROLLMPI)"));' \
+	         -e '$$p =~ s/(\S*)(COMPILERNAME|MPINAME|PYVERSION)(\S*)//g;' \
 	         -e 'print "$$p ";'`; \
 	echo $$packs
 
