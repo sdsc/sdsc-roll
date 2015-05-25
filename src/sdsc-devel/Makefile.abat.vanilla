@@ -38,30 +38,29 @@ clean:
 %-build-and-test:
 	if /bin/echo $(RESTRICTED_ROLLS) | /bin/grep -q $(*); then \
 	  /bin/echo === SKIP $(*) - restricted >> $(LOG_FILE); \
-	  exit 0; \
 	elif /bin/ls $(*)-roll/*.iso > /dev/null 2>&1; then \
 	  /bin/echo === SKIP $(*) - preexists >> $(LOG_FILE); \
-	  exit 0; \
+	else \
+	  for F in $($(*)_PREREQS); do \
+	    /bin/echo === PREREQ $(*) $$F `/bin/date +%F-%T` >> $(LOG_FILE); \
+	    $(MAKE) -f $(THIS_MAKEFILE) LOG_FILE="$(LOG_FILE)" $$F-build-and-test || exit 2; \
+	  done; \
+	  /bin/echo === BUILD $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
+	  $(MAKE) -f $(THIS_MAKEFILE) $(*)-build; \
+	  if ! /bin/ls $(*)-roll/*.iso > /dev/null 2>&1; then \
+	    /bin/echo === BUILD FAIL $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
+	    exit 1; \
+	  fi; \
+	  /bin/echo === BUILD OK $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
+	  /bin/echo === TEST $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
+	  $(MAKE) -f $(THIS_MAKEFILE) $(*)-install || true; \
+	  $(MAKE) -f $(THIS_MAKEFILE) $(*)-test >> $(LOG_FILE) 2>&1; \
+	  if test $$? -ne 0; then \
+	    /bin/echo === TEST FAIL $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
+	    exit 2; \
+	  fi; \
+	  /bin/echo === TEST OK $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
 	fi
-	for F in $($(*)_PREREQS); do \
-	  /bin/echo === PREREQ $(*) $$F `/bin/date +%F-%T` >> $(LOG_FILE); \
-	  $(MAKE) -f $(THIS_MAKEFILE) LOG_FILE="$(LOG_FILE)" $$F-build-and-test || exit 2; \
-	done
-	/bin/echo === BUILD $(*) `/bin/date +%F-%T` >> $(LOG_FILE)
-	$(MAKE) -f $(THIS_MAKEFILE) $(*)-build
-	if ! /bin/ls $(*)-roll/*.iso > /dev/null 2>&1; then \
-	  /bin/echo === BUILD FAIL $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
-	  exit 1; \
-	fi
-	/bin/echo === BUILD OK $(*) `/bin/date +%F-%T` >> $(LOG_FILE)
-	/bin/echo === TEST $(*) `/bin/date +%F-%T` >> $(LOG_FILE)
-	$(MAKE) -f $(THIS_MAKEFILE) $(*)-install || true
-	$(MAKE) -f $(THIS_MAKEFILE) $(*)-test >> $(LOG_FILE) 2>&1
-	if test $$? -ne 0; then \
-	  /bin/echo === TEST FAIL $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
-	  exit 2; \
-	fi
-	/bin/echo === TEST OK $(*) `/bin/date +%F-%T` >> $(LOG_FILE)
 
 mkl-roll: intel-roll
 	/bin/mv intel-roll mkl-roll
