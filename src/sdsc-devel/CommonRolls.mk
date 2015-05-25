@@ -41,7 +41,7 @@ MULTI_COMPILER_ROLLS = \
   atlas boost fftw fpmpi hdf math mpi netcdf trilinos
 NO_COMPILER_ROLLS = \
   beast2 biotools blcr cilk cmake data-transfer ddt fsa gaussian gnucompiler \
-  gnutools guile hadoop idl intel mono nagios pgi r-modules rapidminer sdsc \
+  gnutools guile hadoop idl intel mono nagios pgi r-modules rapidminer \
   stata weka
 
 # ... and again by ROLLMPI value.
@@ -53,7 +53,7 @@ MULTI_MPI_ROLLS = \
 NO_MPI_ROLLS = \
   atlas beagle beast beast2 biotools blcr boost cilk cmake data-transfer ddt \
   fsa gaussian geo gnucompiler gnutools guile hadoop idl intel jags mono mpi \
-  nagios octave polymake pgi python R rapidminer scipy sdsc stata weka
+  nagios octave polymake pgi python R rapidminer scipy stata weka
 
 # Rolls that support ROLLPY make var
 PYTHON_ROLLS = hdf math mpi4py scipy trilinos
