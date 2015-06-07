@@ -1,3 +1,6 @@
+ifndef __SDSCDEVEL_COMMONROLLS_MK
+__SDSCDEVEL_COMMONROLLS_MK = yes
+
 # Makes ROLLDEF calls (see RollStack.mk) for all SDSC rolls that aren't
 # specific to a particular cluster.  include this file after including
 # RollStack.mk and after defining these make vars:
@@ -13,7 +16,7 @@ abyss_PREREQS = boost
 beast_PREREQS = beagle
 biotools_PREREQS = boost cmake fftw gnucompiler hdf intel boost math
 chemistry_PREREQS = cmake fftw
-cilk_PREREQS = gnucompiler intel
+cilk_PREREQS = gnucompiler
 cpmd_PREREQS = fftw
 gaussian_PREREQS = pgi
 geo_PREREQS = R
@@ -110,6 +113,7 @@ $(eval $(subst $(comma)$(space),$(comma),$(DEFINE_ALL_ROLLS)))
 #rabbitmq-roll
 #raxml-roll
 #seedme-roll
-#skeleton-roll
 #visit-roll
 #vmd-roll
+
+endif # __SDSCDEVEL_COMMONROLLS_MK
