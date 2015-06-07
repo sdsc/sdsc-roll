@@ -155,7 +155,7 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	cd ~$($(*)_USER); \
 	su -c "$< Compute" $($(*)_USER)
 
-%-uninstall:
+%-uninstall: %-roll
 	packs=`/bin/cat $*-roll/nodes/* | \
 	       /usr/bin/perl -n \
 	         -e 'next unless ($$p) = /<package>\s*([^\s<]+)/;' \
