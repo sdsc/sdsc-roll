@@ -9,9 +9,9 @@ end
 
 # Add sdsc libraries to search paths
 if (! $?PYTHONPATH) then
-  setenv PYTHONPATH /opt/sdsc/lib
+  setenv PYTHONPATH /opt/sdsc/lib::/opt/sdsc/lib/python2.6/site-packages
 else if ( "$PYTHONPATH" !~ */opt/sdsc/lib* ) then
-  setenv PYTHONPATH ${PYTHONPATH}:/opt/sdsc/lib
+  setenv PYTHONPATH ${PYTHONPATH}:/opt/sdsc/lib::/opt/sdsc/lib/python2.6/site-packages
 endif
 if (! $?LD_LIBRARY_PATH) then
   setenv LD_LIBRARY_PATH /opt/sdsc/lib
