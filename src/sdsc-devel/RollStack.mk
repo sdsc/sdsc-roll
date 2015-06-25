@@ -148,8 +148,12 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 
 /root/rolltests/%.t: %-roll/RPMS/TIMESTAMP
 	$(MAKE) -f $(THIS_MAKEFILE) $*-checknodes
-	rpm -i --nodeps $*-roll/RPMS/*/*.rpm || true
-	touch $@
+	for F in $*-roll/RPMS/*/*.rpm; do \
+	  rpm -i --nodeps $$F || true; \
+	done
+	if test -f $@; then \
+	  touch $@; \
+	fi
 
 %-test: /root/rolltests/%.t
 	cd ~$($(*)_USER); \
