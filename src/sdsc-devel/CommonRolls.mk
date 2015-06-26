@@ -14,7 +14,7 @@ __SDSCDEVEL_COMMONROLLS_MK = yes
 # Implicit roll prereqs, not derived from ROLL{COMPILER,MPI,PY}
 abyss_PREREQS = boost
 beast_PREREQS = beagle
-biotools_PREREQS = boost cmake fftw gnucompiler hdf intel boost math
+biotools_PREREQS = boost cmake fftw gnucompiler hdf math
 chemistry_PREREQS = cmake fftw
 cilk_PREREQS = gnucompiler
 cpmd_PREREQS = fftw
@@ -38,14 +38,13 @@ vtk_PREREQS = cmake
 
 # Complete roll set categorized by ROLLCOMPILER value...
 DEFAULT_COMPILER_ROLLS = \
-  abyss amber beagle beast chemistry cpmd gamess geo grace jags mpi4py nwchem \
-  octave performance polymake python R scipy siesta upc vasp vtk
+  abyss amber beagle beast biotools chemistry cpmd gamess geo grace jags \
+  mpi4py nwchem octave performance polymake python R scipy siesta upc vasp vtk
 MULTI_COMPILER_ROLLS = \
   atlas boost fftw fpmpi hdf math mpi netcdf trilinos
 NO_COMPILER_ROLLS = \
-  beast2 biotools blcr cilk cmake data-transfer ddt fsa gaussian gnucompiler \
-  gnutools guile hadoop idl intel mono nagios pgi r-modules rapidminer \
-  stata weka
+  beast2 blcr cilk cmake data-transfer ddt fsa gaussian gnucompiler gnutools \
+  guile hadoop idl intel mono nagios pgi r-modules rapidminer stata weka
 
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
