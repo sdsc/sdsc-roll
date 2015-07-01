@@ -51,10 +51,10 @@ DEFAULT_MPI_ROLLS = \
   abyss amber chemistry cpmd gamess grace mpi4py nwchem performance r-modules \
   siesta upc vasp vtk
 MULTI_MPI_ROLLS = \
-  fftw hdf math fpmpi netcdf trilinos
+  boost fftw hdf math fpmpi netcdf trilinos
 NO_MPI_ROLLS = \
-  atlas beagle beast beast2 biotools blcr boost cilk cmake data-transfer ddt \
-  fsa gaussian geo gnucompiler gnutools guile hadoop idl intel jags mono mpi \
+  atlas beagle beast beast2 biotools blcr cilk cmake data-transfer ddt fsa \
+  gaussian geo gnucompiler gnutools guile hadoop idl intel jags mono mpi \
   nagios octave polymake pgi python R rapidminer scipy stata weka
 
 # Rolls that support ROLLPY make var
@@ -62,8 +62,8 @@ PYTHON_ROLLS = hdf math mpi4py scipy trilinos
 
 ALL_ROLLS = $(sort $(DEFAULT_COMPILER_ROLLS) $(MULTI_COMPILER_ROLLS) $(NO_COMPILER_ROLLS))
 
-# A couple of rolls that are known to have build failures w/the pgi compilers
-NO_PGI_ROLLS = boost trilinos
+# Rolls that are known to have build failures w/the pgi compilers.
+NO_PGI_ROLLS = atlas boost trilinos
 
 # Rolls not available from github, generally because of a paid license
 RESTRICTED_ROLLS = amber ddt gaussian idl intel pgi stata vasp
