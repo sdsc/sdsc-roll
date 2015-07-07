@@ -35,6 +35,12 @@ include $(SDSCDEVEL)/CommonRolls.mk
 gamess_USER = mysql
 nwchem_USER = mysql
 
+# data-transfer.t can only be run successfully by a user who can ssh to
+# localhost without a passphrase.  Since no Rocks-defined user (including root)
+# can normally do this, this variable may need to be overridden on the make
+# command line.
+data-transfer_USER = $(USER)
+
 mkl_MAKE = $(intel_MAKE) ROLLNAME=mkl
 
 LOG_FILE = $(shell /bin/date +%F-%T-`basename $(THIS_MAKEFILE)`.log)
