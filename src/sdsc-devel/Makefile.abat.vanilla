@@ -63,7 +63,7 @@ clean:
 	  $(MAKE) -f $(THIS_MAKEFILE) $$F-uninstall || true; \
 	  $(MAKE) -f $(THIS_MAKEFILE) $$F-purge || true; \
 	done
-	
+
 %-build-and-test:
 	if /bin/echo $(RESTRICTED_ROLLS) | /bin/grep -q $(*); then \
 	  /bin/echo === SKIP $(*) - restricted >> $(LOG_FILE); \
@@ -81,8 +81,10 @@ clean:
 	    exit 1; \
 	  fi; \
 	  /bin/echo === BUILD OK $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
-	  /bin/echo === TEST $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
+	  /bin/echo === INSTALL $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
 	  $(MAKE) -f $(THIS_MAKEFILE) $(*)-install || true; \
+	  /bin/echo === INSTALL OK $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
+	  /bin/echo === TEST $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
 	  $(MAKE) -f $(THIS_MAKEFILE) $(*)-test >> $(LOG_FILE) 2>&1; \
 	  if test $$? -ne 0; then \
 	    /bin/echo === TEST FAIL $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
