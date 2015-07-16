@@ -125,6 +125,9 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	$(MAKE) -f $(THIS_MAKEFILE) $*-prereqs
 	$(MAKE) -f $(THIS_MAKEFILE) $*-roll
 	cd $*-roll; \
+	if test -x bootstrap.sh; then \
+	  ./bootstrap.sh; \
+	fi
 	$($(*)_MAKE) > build.log 2>&1
 	if find $*-roll -name \*.iso; then \
 	  touch $@; \
