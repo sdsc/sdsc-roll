@@ -108,7 +108,6 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	fi
 
 %-install: /root/rolltests/%.t
-	
 
 %-prereqs:
 	for PREREQ in $(patsubst %,/root/rolltests/%.t,$($(*)_PREREQS)); do \
@@ -125,6 +124,9 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	$(MAKE) -f $(THIS_MAKEFILE) $*-prereqs
 	$(MAKE) -f $(THIS_MAKEFILE) $*-roll
 	cd $*-roll; \
+	if test -x bootstrap.sh; then \
+	  ./bootstrap.sh; \
+	fi
 	$($(*)_MAKE) > build.log 2>&1
 	if find $*-roll -name \*.iso; then \
 	  touch $@; \
@@ -150,6 +152,9 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	$(MAKE) -f $(THIS_MAKEFILE) $*-checknodes
 	for F in $*-roll/RPMS/*/*.rpm; do \
 	  rpm -i --nodeps $$F || true; \
+	done
+	for F in `/usr/bin/perl -ne 'next if /sdsc-/; print "$$1\n" if /([^>\s]+)\s*<\/package>/' $*-roll/nodes/*`; do \
+	  /usr/bin/yum install $$F; \
 	done
 	if test -f $@; then \
 	  touch $@; \
