@@ -9,9 +9,9 @@ done
 
 # Add sdsc libraries to search paths
 if test -z "${PYTHONPATH}"; then
-  export PYTHONPATH=/opt/sdsc/lib
+  export PYTHONPATH=/opt/sdsc/lib:/opt/sdsc/lib/python2.6/site-packages
 elif ! [[ "${PYTHONPATH}" =~ "/opt/sdsc/lib" ]]; then
-  export PYTHONPATH=${PYTHONPATH}:/opt/sdsc/lib
+  export PYTHONPATH=${PYTHONPATH}:/opt/sdsc/lib:/opt/sdsc/lib/python2.6/site-packages
 fi
 if test -z "${LD_LIBRARY_PATH}"; then
   export LD_LIBRARY_PATH=/opt/sdsc/lib
