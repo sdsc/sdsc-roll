@@ -48,14 +48,14 @@ NO_COMPILER_ROLLS = \
 
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
-  abyss amber chemistry cpmd gamess grace mpi4py nwchem performance r-modules \
-  siesta upc vasp vtk
+  abyss amber biotools chemistry cpmd gamess grace mpi4py nwchem performance \
+  r-modules siesta upc vasp vtk
 MULTI_MPI_ROLLS = \
   boost fftw hdf math fpmpi netcdf trilinos
 NO_MPI_ROLLS = \
-  atlas beagle beast beast2 biotools blcr cilk cmake data-transfer ddt fsa \
-  gaussian geo gnucompiler gnutools guile hadoop idl intel jags mono mpi \
-  nagios octave polymake pgi python R rapidminer scipy stata weka
+  atlas beagle beast beast2 blcr cilk cmake data-transfer ddt fsa gaussian \
+  geo gnucompiler gnutools guile hadoop idl intel jags mono mpi nagios octave \
+  polymake pgi python R rapidminer scipy stata weka
 
 # Rolls that support ROLLPY make var
 PYTHON_ROLLS = hdf math mpi4py scipy trilinos
