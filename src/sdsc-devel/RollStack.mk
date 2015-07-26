@@ -101,6 +101,7 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 
 %-build: %-roll/RPMS/TIMESTAMP
 	
+
 %-distclean:
 	if test -d $*-roll; then \
 	  cd $*-roll; \
@@ -108,6 +109,7 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	fi
 
 %-install: /root/rolltests/%.t
+	
 
 %-prereqs:
 	for PREREQ in $(patsubst %,/root/rolltests/%.t,$($(*)_PREREQS)); do \
@@ -126,7 +128,7 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	cd $*-roll; \
 	if test -x bootstrap.sh; then \
 	  ./bootstrap.sh; \
-	fi
+	fi; \
 	$($(*)_MAKE) > build.log 2>&1
 	if find $*-roll -name \*.iso; then \
 	  touch $@; \
