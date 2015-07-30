@@ -50,7 +50,7 @@ $(foreach prereq,$(ALL_PREREQS),$(if $(filter $(prereq),$(RESTRICTED_ROLLS)),,$(
 VANILLA_ROLLS = mkl
 $(foreach roll,$(ALL_ROLLS),$(if $(filter $(roll),$(RESTRICTED_ROLLS)),,$(eval VANILLA_ROLLS += $(roll))))
 
-all-build-and-test:
+build-and-test-all:
 	for F in mkl $(VANILLA_PREREQS); do \
 	  $(MAKE) LOG_FILE=$(LOG_FILE) -f $(THIS_MAKEFILE) $$F-build-and-test || exit 2; \
 	done
