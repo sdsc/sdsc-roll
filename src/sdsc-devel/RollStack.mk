@@ -120,7 +120,11 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	/bin/rm -fr $*-roll
 
 %-roll:
-	$($(*)_GET)
+	get='$($(*)_GET)'; \
+	if test -z "$$get"; then \
+	  get='$(call DEFAULT_GET,$(*))'; \
+	fi; \
+	$$get
 
 %-roll/RPMS/TIMESTAMP:
 	$(MAKE) -f $(THIS_MAKEFILE) $*-prereqs
@@ -144,7 +148,7 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	         -e 'print "$$p ";' | sort | uniq`; \
 	built=`ls $*-roll/RPMS/*/*.rpm`; \
 	for F in $$packs roll-$*-kickstart; do \
-	  built=`echo $$built | sed "s/[^ ]*\/$$F-[0-9][^ ]* *//"`; \
+	  built=`echo $$built | sed "s/[^ ]*\/$$F-[^ ]* *//"`; \
 	done; \
 	if test -n "$$built"; then \
 	  echo "WARNING: rpm(s) '$$built' not referenced in node file(s)"; \
