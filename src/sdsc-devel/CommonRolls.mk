@@ -42,26 +42,25 @@ vtk_PREREQS = cmake
 DEFAULT_COMPILER_ROLLS = \
   abyss amber beagle beast biotools chemistry cipres cpmd gamess geo grace \
   jags migrate mpi4py mpiblast mrbayes nwchem octave performance phylobayes \
-  polymake python qe R raxml scipy siesta upc vasp vtk
+  polymake python qe R scipy siesta upc vasp vtk
 MULTI_COMPILER_ROLLS = \
   atlas boost fftw fpmpi hdf math mpi netcdf trilinos
 NO_COMPILER_ROLLS = \
   beast2 blcr cilk cmake data-transfer ddt fsa gaussian gnucompiler gnutools \
   guile hadoop idl intel molden mono nagios openbabel pgi r-modules \
-  rapidminer stata vmd weka
+  rapidminer raxml stata vmd weka
 
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
   abyss amber biotools chemistry cpmd gamess grace migrate mpi4py mpiblast \
-  mrbayes nwchem performance phylobayes qe r-modules raxml siesta upc \
-  vasp vtk
+  mrbayes nwchem performance phylobayes qe r-modules siesta upc vasp vtk
 MULTI_MPI_ROLLS = \
   boost fftw hdf math fpmpi netcdf trilinos
 NO_MPI_ROLLS = \
   atlas beagle beast beast2 blcr cilk cipres cmake data-transfer ddt fsa \
   gaussian geo gnucompiler gnutools guile hadoop idl intel jags molden mono \
-  mpi nagios octave openbabel polymake pgi python R rapidminer scipy stata \
-  vmd weka
+  mpi nagios octave openbabel polymake pgi python R rapidminer raxml scipy \
+  stata vmd weka
 
 # Rolls that support ROLLPY make var
 PYTHON_ROLLS = hdf math mpi4py openbabel scipy trilinos vmd
@@ -96,7 +95,7 @@ empty :=
 space := $(empty) $(empty)
 $(eval $(subst $(comma)$(space),$(comma),$(DEFINE_ALL_ROLLS)))
 
-# TODO: incorporate these rolls into above lists
+# TODO: incorporate these rolls into above lists?
 $(call ROLLDEF,matlab)
 $(call ROLLDEF,mlnx-ofed)
 $(call ROLLDEF,xsede-stats)
@@ -110,7 +109,6 @@ $(call ROLLDEF,xsede-stats)
 # mopac(P) - abandoned
 # mv2profile - no github
 # p3dfft
-# plink - merged into biotools
 # qchem(P)
 # visit
 
@@ -120,26 +118,19 @@ $(call ROLLDEF,xsede-stats)
 # cgns
 # columbus(P) - abandoned
 # cuda - abandoned
-# dataform(D) - pre-netcdf
 # db2(P) - abandoned
 # fsl
-# garli - merged into raxml
-# gdal - merged into geo
-# geos - merged into geo
 # git - no github
 # img-storage - no github
 # julia
 # lfs(P)
 # lustre(P)
-# mkl - merged into intel
 # moab(P)
 # ncl
 # node - no github
 # neuron
-# papi - merged into performance
 # perftest
 # paraview
-# proj - merged into geo
 # rabbitmq
 # rosetta
 # seedme
@@ -147,4 +138,14 @@ $(call ROLLDEF,xsede-stats)
 # usetrax - abandoned
 # wrf - no github
  
+# Deprecated rolls
+# dataform(D) - renamed netcdf
+# garli(D) - merged into raxml
+# gdal(D) - merged into geo
+# geos(D) - merged into geo
+# mkl(D) - merged into intel
+# papi(D) - merged into performance
+# plink(D) - merged into biotools
+# proj(D) - merged into geo
+
 endif # __SDSCDEVEL_COMMONROLLS_MK
