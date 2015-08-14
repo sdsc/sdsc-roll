@@ -20,6 +20,9 @@ __SDSCDEVEL_ROLL_MK = yes
 #   variables that contain recipe steps to extract and echo package information
 #   for incusion in a DESCRIPTION file.
 #
+# * DESCRIBE_PKG - variable containing recipe steps to echo information about
+#   package being built for inclusion in a DESCRIPTION file.
+#
 # * INSTALL_LICENSE_FILES - variable containing recipe steps to create a dir
 #   in $(ROOT)/$(PKGROOT) to hold package licenses and copy the contents of
 #   license-files/ into it
@@ -86,7 +89,11 @@ DESCRIBE_PYTHON = echo built with python $(call GET_EXE_VERSION, python)
 
 DESCRIBE_MPI = echo built with $(ROLLMPI) $(call GET_MODULE_VERSION, $(ROLLMPI))
 
-DESCRIBE_PKG = echo $(NAME) $(VERSION)
+DESCRIBE_PKG = \
+  echo $(NAME) $(VERSION); \
+  if test -n "$(ROLLOPTS)"; then \
+    echo built with ROLLOPTS=$(ROLLOPTS); \
+  fi
 
 DESCRIBE_BOOST = echo built with boost $(call GET_MODULE_VERSION, boost)
 DESCRIBE_CUDA = echo built with cuda $(call GET_MODULE_VERSION, cuda)
