@@ -124,7 +124,7 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	if test -z "$$get"; then \
 	  get='$(call DEFAULT_GET,$(*))'; \
 	fi; \
-	$$get
+	eval "$$get"
 
 %-roll/RPMS/TIMESTAMP:
 	$(MAKE) -f $(THIS_MAKEFILE) $*-prereqs
