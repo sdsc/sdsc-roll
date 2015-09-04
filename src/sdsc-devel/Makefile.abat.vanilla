@@ -18,6 +18,7 @@ GIT_URL = https://github.com/sdsc/$(1)-roll.git
 
 # Overrides of RollStack.mk default values
 DEFAULT_GET = git clone $(GIT_URL)
+DEFAULT_PUT = git commit
 DEFAULT_ROLLOPTS =
 
 # ROLL{COMPILER,MPI} values for multi-{compiler,mpi} rolls
