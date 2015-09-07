@@ -52,8 +52,8 @@ $(foreach roll,$(ALL_ROLLS),$(if $(filter $(roll),$(RESTRICTED_ROLLS)),,$(eval V
 build-and-test-all:
 	for F in $(VANILLA_ROLLS); do \
 	  $(MAKE) LOG_FILE=$(LOG_FILE) -f $(THIS_MAKEFILE) $$F-build-and-test || true; \
-	  if ! echo "$(ALL_PREREQS)" | grep -q $F; then \
-	    $(MAKE) -f $(THIS_MAKEFILE) $F-uninstall; \
+	  if ! echo "$(ALL_PREREQS)" | grep -q "\"<$$F\>"; then \
+	    $(MAKE) -f $(THIS_MAKEFILE) $$F-uninstall; \
 	  fi; \
 	done
 
@@ -64,7 +64,7 @@ clean:
 	done
 
 %-build-and-test:
-	if /bin/echo $(RESTRICTED_ROLLS) | /bin/grep -q $(*); then \
+	if /bin/echo $(RESTRICTED_ROLLS) | /bin/grep -q "\<$(*)\>"; then \
 	  /bin/echo === SKIP $(*) - restricted >> $(LOG_FILE); \
 	elif test -x /root/rolltests/$(*).t; then \
 	  /bin/echo === SKIP $(*) - preinstalled >> $(LOG_FILE); \
