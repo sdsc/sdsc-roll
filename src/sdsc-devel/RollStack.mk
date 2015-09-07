@@ -148,7 +148,8 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	if test -x bootstrap.sh; then \
 	  ./bootstrap.sh; \
 	fi; \
-	$($(*)_MAKE) > build.log 2>&1
+	echo $($(*)_MAKE) > build.log 2>&1; \
+	$($(*)_MAKE) >> build.log 2>&1
 	if find $*-roll -name \*.iso; then \
 	  touch $@; \
 	fi
@@ -191,7 +192,7 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	         -e 'next unless ($$p) = /<package>\s*([^\s<]+)/;' \
 	         -e 'map($$p =~ s/((\S*)COMPILERNAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLCOMPILER)"));' \
 	         -e 'map($$p =~ s/((\S*)MPINAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLMPI)"));' \
-	         -e 'map($$p =~ s/((\S*)PYVERSION(\S*))/$${2}2.7$$3 $$1/g, split(/\s+/, "$($(*)_ROLLMPI)"));' \
+	         -e 'map($$p =~ s/((\S*)PYVERSION(\S*))/$${2}2.7$$3 $$1/g, split(/\s+/, "$($(*)_ROLLPY)"));' \
 	         -e '$$p =~ s/(\S*)(COMPILERNAME|MPINAME|PYVERSION)(\S*)//g;' \
 	         -e 'print "$$p ";' | sort | uniq`; \
 	for F in $$packs roll-$*-kickstart; do \
