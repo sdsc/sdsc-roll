@@ -47,6 +47,7 @@ __SDSCDEVEL_ROLLSTACK_MK = yes
 # the roll ('%' stands for the roll name).
 #
 # %-build - make the roll's default target
+# %-checknodes - test for built rpms that are not installed by any node file
 # %-commit - commit changes to the roll source
 # %-distclean - make the roll's distclean target
 # %-install - install the rpms produced by the roll build.  No post sections
