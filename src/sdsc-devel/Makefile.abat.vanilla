@@ -48,11 +48,12 @@ LOG_FILE = $(shell /bin/date +%F-%T-`basename $(THIS_MAKEFILE)`.log)
 
 VANILLA_ROLLS = mkl
 $(foreach roll,$(ALL_ROLLS),$(if $(filter $(roll),$(RESTRICTED_ROLLS)),,$(eval VANILLA_ROLLS += $(roll))))
+ALL_PREREQS += mkl
 
 build-and-test-all:
 	for F in $(VANILLA_ROLLS); do \
 	  $(MAKE) LOG_FILE=$(LOG_FILE) -f $(THIS_MAKEFILE) $$F-build-and-test || true; \
-	  if ! echo "$(ALL_PREREQS)" | grep -q "\"<$$F\>"; then \
+	  if ! echo "$(ALL_PREREQS)" | grep -q "\<$$F\>"; then \
 	    $(MAKE) -f $(THIS_MAKEFILE) $$F-uninstall; \
 	  fi; \
 	done
