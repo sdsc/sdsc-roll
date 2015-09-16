@@ -24,6 +24,7 @@ grace_PREREQS = fftw netcdf
 gnutools_PREREQS = gnucompiler
 guile_PREREQS = gnucompiler gnutools
 jags_PREREQS = math R
+llvm_PREREQS = gnucompiler python
 math_PREREQS = cmake fftw gnucompiler hdf
 mpi_PREREQS = gnutools
 mrbayes_PREREQS = beagle
@@ -35,6 +36,7 @@ p3dfft_PREREQS = fftw
 polymake_PREREQS = boost gnucompiler
 r-modules_PREREQS = netcdf R
 siesta_PREREQS = hdf netcdf
+scipy_PREREQS = llvm
 trilinos_PREREQS = cmake
 vasp_PREREQS = fftw
 vmd_PREREQS = cmake netcdf
@@ -42,22 +44,22 @@ vtk_PREREQS = cmake
 
 # Complete roll set categorized by ROLLCOMPILER value...
 DEFAULT_COMPILER_ROLLS = \
-  abyss amber beagle beast biotools chemistry cipres cpmd gamess geo grace \
-  jags llvm migrate mpi4py mpiblast mrbayes ncl neuron nwchem octave \
+  abyss amber beagle beast biotools chemistry cipres cpmd dppdiv gamess geo \
+  grace jags migrate mpi4py mpiblast mrbayes ncl neuron nwchem octave \
   performance phylobayes polymake python qe R raxml scipy siesta upc vasp vmd \
   vtk
 MULTI_COMPILER_ROLLS = \
   atlas boost fftw fpmpi hdf math mpi netcdf p3dfft trilinos
 NO_COMPILER_ROLLS = \
   beast2 blcr cilk cmake data-transfer ddt fsa gaussian gnucompiler gnutools \
-  guile hadoop idl intel julia knime molden mono nagios openbabel pgi \
+  guile hadoop idl intel julia knime llvm molden mono nagios openbabel pgi \
   r-modules rapidminer stata weka
 
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
-  abyss amber biotools chemistry cpmd gamess grace migrate mpi4py mpiblast \
-  mrbayes ncl neuron nwchem performance phylobayes qe r-modules raxml siesta \
-  upc vasp vmd vtk
+  abyss amber biotools chemistry cpmd dppdiv gamess grace migrate mpi4py \
+  mpiblast mrbayes ncl neuron nwchem performance phylobayes qe r-modules \
+  raxml siesta upc vasp vmd vtk
 MULTI_MPI_ROLLS = \
   boost fftw hdf math fpmpi netcdf p3dfft trilinos
 NO_MPI_ROLLS = \
@@ -67,7 +69,7 @@ NO_MPI_ROLLS = \
   rapidminer scipy stata weka
 
 # Rolls that support ROLLPY make var
-PYTHON_ROLLS = hdf llvm math mpi4py neuron openbabel scipy trilinos vmd
+PYTHON_ROLLS = hdf math mpi4py neuron openbabel scipy trilinos vmd
 
 ALL_ROLLS = $(sort $(DEFAULT_COMPILER_ROLLS) $(MULTI_COMPILER_ROLLS) $(NO_COMPILER_ROLLS))
 
@@ -111,12 +113,6 @@ $(eval $(subst $(comma)$(space),$(comma),$(DEFINE_ALL_ROLLS)))
 # - tscc-config
 # - tscc-private
 
-# TODO: coming to Comet, so add to list
-# + dppdiv
-
-# TODO: rolls to dump
-# - triton-base - idea became sdsc-roll
-
 # Under development
 # + cuda - under devel
 # + rabbitmq - under devel
@@ -128,6 +124,7 @@ $(eval $(subst $(comma)$(space),$(comma),$(DEFINE_ALL_ROLLS)))
 # - lustre
 # + perftest - ask Trevor
 # - sdsc-sec
+# - triton-base - idea became sdsc-roll
 # + usetrax - abandoned
 # - xsede-common
  
