@@ -74,7 +74,7 @@ PYTHON_ROLLS = hdf math mpi4py neuron openbabel scipy trilinos vmd
 ALL_ROLLS = $(sort $(DEFAULT_COMPILER_ROLLS) $(MULTI_COMPILER_ROLLS) $(NO_COMPILER_ROLLS))
 
 # Rolls that are known to have build failures w/the pgi compilers.
-NO_PGI_ROLLS = atlas boost trilinos
+NO_PGI_ROLLS = atlas boost p3dfft trilinos
 
 # Rolls not available from github, generally because of a paid license
 RESTRICTED_ROLLS = amber ddt gaussian idl intel pgi stata vasp
