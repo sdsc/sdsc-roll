@@ -14,7 +14,8 @@ __SDSCDEVEL_COMMONROLLS_MK = yes
 # Implicit roll prereqs, not derived from ROLL{COMPILER,MPI,PY}
 abyss_PREREQS = boost
 beast_PREREQS = beagle
-biotools_PREREQS = boost cmake fftw gnucompiler hdf math
+biotools_PREREQS = boost cmake fftw gnucompiler hdf math scipy
+cern_PREREQS = cmake gnucompiler
 chemistry_PREREQS = cmake fftw
 cilk_PREREQS = gnucompiler
 cpmd_PREREQS = fftw
@@ -51,9 +52,9 @@ DEFAULT_COMPILER_ROLLS = \
 MULTI_COMPILER_ROLLS = \
   atlas boost fftw fpmpi hdf math mpi netcdf p3dfft trilinos
 NO_COMPILER_ROLLS = \
-  beast2 blcr cilk cmake data-transfer ddt fsa gaussian gnucompiler gnutools \
-  guile hadoop idl intel julia knime llvm molden mono nagios openbabel pgi \
-  r-modules rapidminer stata weka
+  beast2 blcr cern cilk cmake data-transfer ddt fsa gaussian gnucompiler \
+  gnutools guile hadoop idl intel julia knime llvm molden mono nagios \
+  openbabel pgi r-modules rapidminer stata weka
 
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
@@ -63,7 +64,7 @@ DEFAULT_MPI_ROLLS = \
 MULTI_MPI_ROLLS = \
   boost fftw hdf math fpmpi netcdf p3dfft trilinos
 NO_MPI_ROLLS = \
-  atlas beagle beast beast2 blcr cilk cipres cmake data-transfer ddt fsa \
+  atlas beagle beast beast2 blcr cern cilk cipres cmake data-transfer ddt fsa \
   gaussian geo gnucompiler gnutools guile hadoop idl intel jags julia knime \
   llvm molden mono mpi nagios octave openbabel polymake pgi python R \
   rapidminer scipy stata weka
@@ -118,7 +119,6 @@ $(eval $(subst $(comma)$(space),$(comma),$(DEFINE_ALL_ROLLS)))
 # + rabbitmq - under devel
 
 # TODO: orphaned?
-# + cern - keep
 # - gordon-test-apps
 # - lfs
 # - lustre
