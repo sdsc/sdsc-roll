@@ -146,8 +146,10 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	$(MAKE) -f $(THIS_MAKEFILE) $*-prereqs
 	$(MAKE) -f $(THIS_MAKEFILE) $*-roll
 	cd $*-roll; \
-	if test -x bootstrap.sh; then \
-	  ./bootstrap.sh; \
+	if test -f bootstrap.sh; then \
+	  for F in `/usr/bin/perl -ne 'print "$$1\n" if /^\s*yum\s+install\s+(.+)/;' bootstrap.sh`; do \
+	    yum install $$F; \
+	  done; \
 	fi; \
 	echo $($(*)_MAKE) > build.log 2>&1; \
 	$($(*)_MAKE) >> build.log 2>&1
@@ -199,6 +201,11 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	for F in $$packs roll-$*-kickstart; do \
 	  rpm -e --nodeps $$F > /dev/null 2>&1 || true; \
 	done
+	if test -f $*-roll/bootstrap.sh; then \
+	  for F in `/usr/bin/perl -ne 'print "$$1\n" if /^\s*yum\s+install\s+(.+)/;' $*-roll/bootstrap.sh`; do \
+	    rpm -e --nodeps $$F > /dev/null 2>&1 || true; \
+	  done; \
+	fi; \
 
 %-vars:
 	@echo $(*)_GET '$($(*)_GET)'
