@@ -16,7 +16,7 @@ abyss_PREREQS = boost
 beast_PREREQS = beagle
 biotools_PREREQS = boost cmake fftw gnucompiler hdf math scipy
 cern_PREREQS = cmake gnucompiler
-chemistry_PREREQS = cmake fftw
+chemistry_PREREQS = cmake fftw netcdf
 cilk_PREREQS = gnucompiler
 cpmd_PREREQS = fftw
 gaussian_PREREQS = pgi
@@ -74,7 +74,14 @@ PYTHON_ROLLS = hdf math mpi4py neuron openbabel scipy trilinos vmd
 
 ALL_ROLLS = $(sort $(DEFAULT_COMPILER_ROLLS) $(MULTI_COMPILER_ROLLS) $(NO_COMPILER_ROLLS))
 
-# Rolls that are known to have build failures w/the pgi compilers.
+# Single-compiler rolls known to have problems w/intel.
+# Intel 2013 gdal compilation aborts w/an internal compiler error.
+# Intel 2013-compiled R seems to have memory problems, failing this test:
+#    tp<-svd(matrix(rnorm(250*250),250,250))
+# Intel-compiled siesta segfaults
+NO_INTEL_ROLLS = geo R siesta
+
+# Multi-compiler rolls known to have build failures w/the pgi compilers.
 NO_PGI_ROLLS = atlas boost p3dfft trilinos
 
 # Rolls not available from github, generally because of a paid license
@@ -88,6 +95,7 @@ $$(foreach roll,$$(ALL_ROLLS), \
   $$(call ROLLDEF, \
           $$(roll), \
           $$(if $$(filter $$(roll),$$(MULTI_COMPILER_ROLLS)),ROLLCOMPILER=$$(MULTI_COMPILER)), \
+          $$(if $$(filter $$(roll),$$(NO_INTEL_ROLLS)),ROLLCOMPILER=gnu), \
           $$(if $$(filter $$(roll),$$(NO_PGI_ROLLS)),ROLLCOMPILER=$$(MULTI_COMPILER:pgi=)), \
           $$(if $$(filter $$(roll),$$(NO_COMPILER_ROLLS)),ROLLCOMPILER=), \
           $$(if $$(filter $$(roll),$$(MULTI_MPI_ROLLS)),ROLLMPI=$$(MULTI_MPI)), \
