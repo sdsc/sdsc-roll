@@ -7,9 +7,11 @@ import os.path
 import re
 import sys
 
-class Module:
+class Modulefile:
+  """ A class that represents a single environment modulefile. """
 
   def __init__(self, path):
+    """ Class constructor. """
     self._errors = {}
     self._programs = None
     self._libraries = None
@@ -18,9 +20,17 @@ class Module:
     self._text = commands.getoutput(command)
     self._variablesMod = None
     self._variablesNew = None
-    Module.instances[path] = self
+    Modulefile.instances[path] = self
+    if self._text.find('Unable to locate') >= 0:
+      self._errors[path] = 'Modulefile not found'
 
   def addedLibraries(self):
+    """
+    Returns a dictionary of dynamic libraries made available by the
+    modulefile.  Each key is the name of a library; the corresponding
+    value is the full path to it.
+    """
+
     if self._libraries == None:
       self._libraries = {}
       for addition in re.findall(r'(?:ap|pre)pend-path\s+LD_LIBRARY_PATH\b([^\n]*)', self._text):
@@ -41,6 +51,11 @@ class Module:
     return self._libraries
 
   def addedPrograms(self):
+    """
+    Returns a dictionary of programs made available by the modulefile.
+    Each key is the name of a program; the corresponding value is the
+    full path to it.
+    """
     if self._programs == None:
       self._programs = {}
       for addition in re.findall(r'(?:ap|pre)pend-path\s+PATH\b([^\n]*)', self._text):
@@ -60,6 +75,11 @@ class Module:
     return self._programs
 
   def addedVariables(self):
+    """
+    Returns a dictionary of environment variables set by the modulefile.
+    Each key is the name of an environment variable; the corresponding
+    value is the assigned value.
+    """
     if self._variablesNew == None:
       self._variablesNew = {}
       for (var, value) in re.findall(r'setenv\s+(\S+)([^\n]*)', self._text):
@@ -70,6 +90,11 @@ class Module:
     return self._variablesNew
 
   def errors(self):
+    """
+    Returns a dictionary of errors found within the modulefile.  Each key
+    is the name of a resource incorrectly modified; the corresponding
+    value describes the error.
+    """
     self.addedPrograms()
     self.addedLibraries()
     self.addedVariables()
@@ -77,6 +102,11 @@ class Module:
     return self._errors
 
   def modifiedVariables(self):
+    """
+    Returns a dictionary of environment variables modified by the modulefile.
+    Each key is the name of an environment variable; the corresponding
+    value is the appended/prepended value.
+    """
     if self._variablesMod == None:
       self._variablesMod = {}
       for (var, value) in re.findall(r'(?:ap|pre)pend-path\s+(\S+)([^\n]*)', self._text):
@@ -91,34 +121,60 @@ class Module:
     return self._variablesMod
 
   def path(self):
+    """ Returns the path used to instantiate the Modulefile instance. """
     return self._path
 
   @classmethod
-  def findLibrary(cls, resource):
+  def findLibrary(cls, pattern):
+    """
+    A class method that returns a list of (Modulefile, path) tuples,
+    representing the set of libraries provided by any known Modulefile
+    that have a name matching the specified pattern.
+    """
     result = []
-    for m in Module.instances.values():
-      if m.addedLibraries().has_key(resource):
-        result.append(m)
+    for m in Modulefile.instances.values():
+      libs = m.addedLibraries()
+      for k in libs.keys():
+        if re.search(pattern, k):
+          result.append((m, libs[k]))
     return result
 
   @classmethod
-  def findProgram(cls, resource):
+  def findProgram(cls, pattern):
+    """
+    A class method that returns a list of (Modulefile, path) tuples,
+    representing the set of programs provided by any known Modulefile
+    that have a name matching the specified pattern.
+    """
     result = []
-    for m in Module.instances.values():
-      if m.addedPrograms().has_key(resource):
-        result.append(m)
+    for m in Modulefile.instances.values():
+      progs = m.addedPrograms()
+      for k in progs.keys():
+        if re.search(pattern, k):
+          result.append((m, progs[k]))
     return result
 
   @classmethod
-  def findVariable(cls, resource):
+  def findVariable(cls, pattern):
+    """
+    A class method that returns a list of (Module, name) tuples,
+    representing the set of variables set by any known Modulefile
+    that have a name matching the specified pattern.
+    """
     result = []
-    for m in Module.instances.values():
-      if m.addedVariables().has_key(resource):
-        result.append(m)
+    for m in Modulefile.instances.values():
+      vars = m.addedVariables()
+      for k in vars.keys():
+        if re.search(pattern, k):
+          result.append((m, k))
     return result
 
   @classmethod
   def initAll(cls):
+    """
+    A class method that creates a Modulefile instance for every
+    modulefile accessible via the MODULEPATH environment variable.
+    """
     for dir in os.environ['MODULEPATH'].split(':'):
       if not os.path.exists(dir):
         continue
@@ -130,27 +186,23 @@ class Module:
           filePath = "%s/%s" % (subdirPath, file)
           if os.path.isdir(filePath) or file.startswith('.'):
             continue
-          m = Module("%s/%s" % (subdir, file))
+          m = Modulefile("%s/%s" % (subdir, file))
 
-Module.instances = {}
+Modulefile.instances = {}
 
 class ModuleInspect:
   """
   module-inspect - report resources provided by environment modules
 
-  module-inspect [-h -v] [--errs=y/n] [--find=resource[,resource...]]
-                 [--libs=y/n] [--progs=y/n] [--vars=y/n] [module ...]
+  module-inspect [-h --version] [--errs=y/n] [--exact=y/n]
+                 [--libs=y/n] [--match=string[,string...]]
+                 [--progs=y/n] [--vars=y/n] [module ...]
 
     -h
       Show this information, then exit.
 
-    -v
+    --version
       Print version, then exit.
-
-    --find=resource[,resource...]
-      Report which, if any, of the listed modulefiles supplies the listed
-      resource(s).  If this option is not specified, the program reports
-      all resources provided by all the listed modules.
 
     --errs=y/n
     --libs=y/n
@@ -162,18 +214,29 @@ class ModuleInspect:
       these; if one or more of these options is given explicitly, the others
       are not reported.
 
+    --exact=y/n
+      If 'y', treat the strings passed to --match as fixed strings to be
+      matched exactly; otherwise, treat them as regular expressions.
+      Default 'n'.
+
+    --match=string[,string...]
+      Report which, if any, of the listed modulefiles supplies resources
+      that match the listed string(s).  If this option is not specified,
+      the program reports all resources provided by all listed modules.
+
     module ...
-      List of modules to report.  By default, the program reports all
+      List of modules to inspect.  By default, the program inspects all
       available modules.
   """
 
   def __init__(self):
     """Class constructor."""
 
-    parser = OptionParser('usage: %prog [options] [module ...]', add_help_option=False, version='%prog v0.1')
+    parser = OptionParser('usage: %prog [options] [module ...]', add_help_option=False, version='%prog v1.0.0')
     parser.add_option('-h', '--help', action='store_true')
     parser.add_option('--errs', default='n')
-    parser.add_option('--find')
+    parser.add_option('--exact', default='n')
+    parser.add_option('--match')
     parser.add_option('--libs', default='n')
     parser.add_option('--progs', default='n')
     parser.add_option('--vars', default='n')
@@ -192,14 +255,14 @@ class ModuleInspect:
       options.vars = 'y'
 
     if len(args) == 0:
-      Module.initAll()
+      Modulefile.initAll()
     else:
       for m in args:
-        Module(m)
+        Modulefile(m)
 
-    if options.find == None:
-      for path in sorted(Module.instances.keys()):
-        module = Module.instances[path]
+    if options.match == None:
+      for path in sorted(Modulefile.instances.keys()):
+        module = Modulefile.instances[path]
         print path
         if options.progs != 'n':
           programs = module.addedPrograms()
@@ -221,15 +284,17 @@ class ModuleInspect:
           for error in sorted(errors.keys()):
             print "  error %s = %s" % (error, errors[error])
     else:
-      for resource in options.find.split(','):
+      for str in options.match.split(','):
+        if options.exact == 'y':
+          str = "^%s$" % str
         if options.progs != 'n':
-          for module in Module.findProgram(resource):
-            print "program %s provided by %s" % (resource, module.path())
+          for (module, path) in Modulefile.findProgram(str):
+            print "program %s provided by %s" % (path.split('/')[-1], module.path())
         if options.libs != 'n':
-          for module in Module.findLibrary(resource):
-            print "library %s provided by %s" % (resource, module.path())
+          for (module, path) in Modulefile.findLibrary(str):
+            print "library %s provided by %s" % (path.split('/')[-1], module.path())
         if options.vars != 'n':
-          for module in Module.findVariable(resource):
-            print "variable %s provided by %s" % (resource, module.path())
+          for (module, var) in Modulefile.findVariable(str):
+            print "variable %s provided by %s" % (var, module.path())
 
 ModuleInspect()
