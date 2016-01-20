@@ -5,12 +5,12 @@
 # @Copyright@
 #
 
-function usage () 
+function usage ()
 {
     echo "$0 [-h][-c copyright]"
-    echo "Update Copyright in all files"  
-    echo " -h      help"  
-    echo " -c      copyright file"  
+    echo "Update Copyright in all files"
+    echo " -h      help"
+    echo " -c      copyright file"
 }
 
 # Defaults
@@ -25,7 +25,7 @@ do
       c)  COPYRIGHTFILE="$OPTARG";;
       \?)       # unknown flag
           echo >&2 \
-      usage 
+      usage
       exit 1;;
     esac
 done
@@ -45,4 +45,3 @@ q
 EOF
 
 done
-
