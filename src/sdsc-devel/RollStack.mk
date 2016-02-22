@@ -47,6 +47,7 @@ __SDSCDEVEL_ROLLSTACK_MK = yes
 # the roll ('%' stands for the roll name).
 #
 # %-build - make the roll's default target
+# %-clean - equivalent to %-uninstall followed by %-purge
 # %-checknodes - test for built rpms that are not installed by any node file
 # %-commit - commit changes to the roll source
 # %-distclean - make the roll's distclean target
@@ -109,6 +110,9 @@ ROLLDEF = \
 THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 
 %-build: %-roll/RPMS/TIMESTAMP
+	
+
+%-clean: %-uninstall %-purge
 	
 
 %-commit: %-roll
@@ -189,23 +193,26 @@ THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 	cd ~$($(*)_USER); \
 	su -c "$< Compute" $($(*)_USER)
 
-%-uninstall: %-roll
-	packs=`/bin/cat $*-roll/nodes/* | \
-	       /usr/bin/perl -n \
-	         -e 'next unless ($$p) = /<package>\s*([^\s<]+)/;' \
-	         -e 'map($$p =~ s/((\S*)COMPILERNAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLCOMPILER)"));' \
-	         -e 'map($$p =~ s/((\S*)MPINAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLMPI)"));' \
-	         -e 'map($$p =~ s/((\S*)PYVERSION(\S*))/$${2}2.7$$3 $$1/g, split(/\s+/, "$($(*)_ROLLPY)"));' \
-	         -e '$$p =~ s/(\S*)(COMPILERNAME|MPINAME|PYVERSION)(\S*)//g;' \
-	         -e 'print "$$p ";' | sort | uniq`; \
-	for F in $$packs roll-$*-kickstart; do \
-	  rpm -e --nodeps $$F > /dev/null 2>&1 || true; \
-	done
-	if test -f $*-roll/bootstrap.sh; then \
-	  for F in `/usr/bin/perl -ne 'print "$$1\n" if /^\s*yum\s+install\s+(.+)/;' $*-roll/bootstrap.sh`; do \
+%-uninstall:
+	if test -e /root/rolltests/$*.t; then \
+	  $(MAKE) -f $(THIS_MAKEFILE) $*-roll; \
+	  packs=`/bin/cat $*-roll/nodes/* | \
+	         /usr/bin/perl -n \
+	           -e 'next unless ($$p) = /<package>\s*([^\s<]+)/;' \
+	           -e 'map($$p =~ s/((\S*)COMPILERNAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLCOMPILER)"));' \
+	           -e 'map($$p =~ s/((\S*)MPINAME(\S*))/$$2$$_$$3 $$1/g, split(/\s+/, "$($(*)_ROLLMPI)"));' \
+	           -e 'map($$p =~ s/((\S*)PYVERSION(\S*))/$${2}2.7$$3 $$1/g, split(/\s+/, "$($(*)_ROLLPY)"));' \
+	           -e '$$p =~ s/(\S*)(COMPILERNAME|MPINAME|PYVERSION)(\S*)//g;' \
+	           -e 'print "$$p ";' | sort | uniq`; \
+	  for F in $$packs roll-$*-kickstart; do \
 	    rpm -e --nodeps $$F > /dev/null 2>&1 || true; \
 	  done; \
-	fi; \
+	  if test -f $*-roll/bootstrap.sh; then \
+	    for F in `/usr/bin/perl -ne 'print "$$1\n" if /^\s*yum\s+install\s+(.+)/;' $*-roll/bootstrap.sh`; do \
+	      rpm -e --nodeps $$F > /dev/null 2>&1 || true; \
+	    done; \
+	  fi; \
+	fi
 
 %-vars:
 	@echo $(*)_GET '$($(*)_GET)'

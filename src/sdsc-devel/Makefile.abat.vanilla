@@ -17,7 +17,7 @@
 GIT_URL = https://github.com/sdsc/$(1)-roll.git
 
 # Overrides of RollStack.mk default values
-DEFAULT_GET = git clone $(GIT_URL)
+DEFAULT_GET = git clone $(GIT_URL) $($(1)_GITOPTS)
 DEFAULT_PUT = git commit
 DEFAULT_ROLLOPTS =
 
@@ -60,8 +60,7 @@ build-and-test-all:
 
 clean:
 	for F in mkl $(VANILLA_ROLLS); do \
-	  $(MAKE) -f $(THIS_MAKEFILE) $$F-uninstall || true; \
-	  $(MAKE) -f $(THIS_MAKEFILE) $$F-purge || true; \
+	  $(MAKE) -f $(THIS_MAKEFILE) $$F-clean || true; \
 	done
 
 %-build-and-test:
