@@ -45,7 +45,7 @@ class Modulefile:
           for file in os.listdir(path):
             filePath = "%s/%s" % (path, file)
             if not os.access(filePath, os.R_OK) or \
-               not re.match(r'^lib.*\.so(\.\d+)*$', file):
+               not re.search(r'\.so(\.\d+)*$', file):
               continue
             self._libraries[file] = filePath
     return self._libraries
@@ -232,7 +232,7 @@ class ModuleInspect:
   def __init__(self):
     """Class constructor."""
 
-    parser = OptionParser('usage: %prog [options] [module ...]', add_help_option=False, version='%prog v1.0.0')
+    parser = OptionParser('usage: %prog [options] [module ...]', add_help_option=False, version='%prog v1.0.1')
     parser.add_option('-h', '--help', action='store_true')
     parser.add_option('--errs', default='n')
     parser.add_option('--exact', default='n')
@@ -286,7 +286,7 @@ class ModuleInspect:
     else:
       for str in options.match.split(','):
         if options.exact == 'y':
-          str = "^%s$" % str
+          str = "^%s$" % re.escape(str)
         if options.progs != 'n':
           for (module, path) in Modulefile.findProgram(str):
             print "program %s provided by %s" % (path.split('/')[-1], module.path())
