@@ -41,10 +41,15 @@ nwchem_USER = mysql
 # can normally do this, this variable may need to be overridden on the make
 # command line.
 data-transfer_USER = $(USER)
+biotools_MAKE += ROLLOPTS='java8home=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.31-1.b13.el6_6.x86_64'
 
 mkl_MAKE = $(intel_MAKE) ROLLNAME=mkl
 
 LOG_FILE = $(shell /bin/date +%F-%T-`basename $(THIS_MAKEFILE)`.log)
+
+chemistry_MAKE += ROLLMPI=openmpi_eth
+chemistry_PREREQS += mpi
+ALL_REREQS += mpi
 
 VANILLA_ROLLS = mkl
 $(foreach roll,$(ALL_ROLLS),$(if $(filter $(roll),$(RESTRICTED_ROLLS)),,$(eval VANILLA_ROLLS += $(roll))))
