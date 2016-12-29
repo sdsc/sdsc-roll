@@ -87,6 +87,11 @@ clean:
 	  /bin/echo === BUILD OK $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
 	  /bin/echo === INSTALL $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
 	  $(MAKE) -f $(THIS_MAKEFILE) $(*)-install || true; \
+	  for F in `find $(*)-roll/src -name post-[0-9]\* | sed 's!.*/!!'`; do \
+	    if test -x /etc/rc.d/rocksconfig.d/$$F; then \
+	      /etc/rc.d/rocksconfig.d/$$F; \
+	    fi; \
+	  done; \
 	  /bin/echo === INSTALL OK $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
 	  /bin/echo === TEST $(*) `/bin/date +%F-%T` >> $(LOG_FILE); \
 	  $(MAKE) -f $(THIS_MAKEFILE) $(*)-test >> $(LOG_FILE) 2>&1; \
