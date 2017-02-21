@@ -55,8 +55,8 @@ MULTI_COMPILER_ROLLS = \
   atlas boost fftw fpmpi hdf math mpi netcdf p3dfft trilinos
 NO_COMPILER_ROLLS = \
   beast2 blcr cern cmake data-transfer ddt fsa gaussian gnucompiler gnutools \
-  guile hadoop idl img-storage intel julia knime llvm mover molden mono \
-  nagios openbabel pgi rapidminer sdsc-sec singularity stata weka
+  guile hadoop idl img-storage intel julia knime llvm molden mono nagios \
+  openbabel pgi rapidminer sdsc-sec singularity stata weka
 
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
@@ -68,8 +68,8 @@ MULTI_MPI_ROLLS = \
 NO_MPI_ROLLS = \
   atlas beagle beast beast2 biotools blcr cern cilk cipres cmake data-transfer \
   ddt fsa gaussian geo gnucompiler gnutools guile hadoop idl img-storage \
-  intel jags julia llvm mover molden mono mpi nagios octave openbabel pgi \
-  polymake python R knime rapidminer scipy sdsc-sec singularity stata weka
+  intel jags julia llvm molden mono mpi nagios octave openbabel pgi polymake \
+  python R knime rapidminer scipy sdsc-sec singularity stata weka
 
 # Rolls that load the cuda module - presently, documentation only, since we
 # don't produce a cuda roll
