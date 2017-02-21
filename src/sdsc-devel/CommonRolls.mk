@@ -120,7 +120,7 @@ empty :=
 space := $(empty) $(empty)
 $(eval $(subst $(comma)$(space),$(comma),$(DEFINE_ALL_ROLLS)))
 
-# Bitbucket repos not packagd as rolls
+# Bitbucket repos not packaged as rolls
 # - lustre-data-mover
 # - slurm
 
