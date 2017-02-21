@@ -54,24 +54,22 @@ DEFAULT_COMPILER_ROLLS = \
 MULTI_COMPILER_ROLLS = \
   atlas boost fftw fpmpi hdf math mpi netcdf p3dfft trilinos
 NO_COMPILER_ROLLS = \
-  beast2 blcr cern cmake data-transfer ddt fsa gaussian gnucompiler \
-  gnutools guile hadoop idl img-storage intel julia knime llvm \
-  lustre-data-mover molden mono nagios openbabel pgi rapidminer sdsc-sec \
-  singularity slurm stata weka
+  beast2 blcr cern cmake data-transfer ddt fsa gaussian gnucompiler gnutools \
+  guile hadoop idl img-storage intel julia knime llvm mover molden mono \
+  nagios openbabel pgi rapidminer sdsc-sec singularity stata weka
 
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
   abyss amber chemistry cpmd cryoem dppdiv gamess grace migrate mpi4py \
-  mpiblast mrbayes ncar ncl neuron nwchem phylobayes qe r-modules \
-  raxml siesta upc vasp vmd vtk
+  mpiblast mrbayes ncar ncl neuron nwchem phylobayes qe r-modules raxml \
+  siesta upc vasp vmd vtk
 MULTI_MPI_ROLLS = \
   boost fftw fpmpi hdf math netcdf p3dfft performance trilinos
 NO_MPI_ROLLS = \
   atlas beagle beast beast2 biotools blcr cern cilk cipres cmake data-transfer \
   ddt fsa gaussian geo gnucompiler gnutools guile hadoop idl img-storage \
-  intel jags julia llvm lustre-data-mover molden mono mpi nagios octave \
-  openbabel pgi polymake python R knime rapidminer scipy sdsc-sec singularity \
-  slurm stata weka
+  intel jags julia llvm mover molden mono mpi nagios octave openbabel pgi \
+  polymake python R knime rapidminer scipy sdsc-sec singularity stata weka
 
 # Rolls that load the cuda module - presently, documentation only, since we
 # don't produce a cuda roll
@@ -121,6 +119,10 @@ comma := ,
 empty :=
 space := $(empty) $(empty)
 $(eval $(subst $(comma)$(space),$(comma),$(DEFINE_ALL_ROLLS)))
+
+# Bitbucket repos not packagd as rolls
+# - lustre-data-mover
+# - slurm
 
 # SDSC devel roll; contains this file
 # - sdsc
