@@ -48,15 +48,16 @@ vtk_PREREQS = cmake
 # Complete roll set categorized by ROLLCOMPILER value...
 DEFAULT_COMPILER_ROLLS = \
   abyss amber beagle beast biotools chemistry cilk cipres cpmd cryoem dppdiv \
-  gamess geo grace jags lustre-data-mover migrate mpi4py mpiblast mrbayes \
-  ncar ncl neuron nwchem octave performance phylobayes polymake python qe R \
-  r-modules raxml scipy siesta upc vasp vmd vtk
+  gamess geo grace jags migrate mpi4py mpiblast mrbayes ncar ncl neuron \
+  nwchem octave performance phylobayes polymake python qe R r-modules raxml \
+  scipy siesta upc vasp vmd vtk
 MULTI_COMPILER_ROLLS = \
   atlas boost fftw fpmpi hdf math mpi netcdf p3dfft trilinos
 NO_COMPILER_ROLLS = \
   beast2 blcr cern cmake data-transfer ddt fsa gaussian gnucompiler \
-  gnutools guile hadoop idl img-storage intel julia knime llvm molden mono \
-  nagios openbabel pgi rapidminer sdsc-sec singularity slurm stata weka
+  gnutools guile hadoop idl img-storage intel julia knime llvm \
+  lustre-data-mover molden mono nagios openbabel pgi rapidminer sdsc-sec \
+  singularity slurm stata weka
 
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
