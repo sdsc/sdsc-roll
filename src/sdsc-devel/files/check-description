@@ -76,6 +76,9 @@ class checkDescription:
       for module in re.findall(r'\$\(MODULE_LOAD_(\w+)\)', descriptionRecipe):
         if module in compilerModules:
           continue
+        if module == 'MKL' and 'MKL_ROOT' in descriptionRecipe:
+          # Testing whether MKL is available
+          continue
         print "%s MODULE_LOAD_%s: extraneous" % (makefile, module)
 
 checkDescription()
