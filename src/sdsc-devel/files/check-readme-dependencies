@@ -1,0 +1,56 @@
+#!/bin/env python
+
+import commands
+import glob
+import re
+import sys
+
+class checkReadmeDependencies:
+  """
+  check-readme-dependencies - Check whether README.md mentions all the
+  modules loaded by a roll's Makefiles.
+
+  check-readme-dependencies [-h] [roll ...]
+
+    -h
+      Print this text, then exit.
+
+    roll ...
+      List of roll directories to check.  Default *-roll.
+  """
+
+  def __init__(self):
+
+    rollDirs = []
+
+    for arg in sys.argv[1:]:
+      if arg == '-h':
+        help(checkReadmeDependencies)
+        sys.exit(0)
+      else:
+        rollDirs.append(arg)
+
+    if len(rollDirs) == 0:
+      rollDirs = glob.glob('*-roll')
+
+    for rollDir in sorted(rollDirs):
+
+      readme = open('%s/README.md' % rollDir, 'r').read()
+      lines = commands.getoutput("/bin/grep -io 'module[^u]*load[_ ]*[a-z0-9_]*' %s/src/*/Makefile | /bin/sort | /usr/bin/uniq" % rollDir).split("\n");
+      if len(lines) == 1 and lines[0] == '':
+        continue # No module loads in roll
+      for line in sorted(lines):
+        (makefilePath, module) = line.split(':')
+        if module in ('MODULE_LOAD_COMPILER', 'MODULE_LOAD_PACKAGE'):
+          continue # Load macro definition rather than use
+        module = re.sub('(?i)module[_ ]*load[_ ]*', '', module)
+        if re.match('CC|CXX|F77|FC', module):
+          module = 'compiler'
+        if re.match('HDF[45]', module):
+          module = 'HDF'
+        inReadme = 'missing'
+        if re.search('(?si)%s.*(module|roll)' % module, readme):
+          inReadme = 'ok'
+        print "%s: %s %s" % (makefilePath.replace('/Makefile', ''), module, inReadme);
+
+checkReadmeDependencies()
