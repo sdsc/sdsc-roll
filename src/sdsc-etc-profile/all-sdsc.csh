@@ -1,5 +1,5 @@
 # Note: This file has a name near the beginning of the alphabet to ensure that
-# # it runs before any /etc/profile file that loads default modules.
+# it runs before any /etc/profile file that loads default modules.
 
 # Add /opt/modulefiles/* to module search path
 foreach F (`find /opt/modulefiles -maxdepth 1 -mindepth 1 -type d`)
