@@ -61,14 +61,14 @@ NO_COMPILER_ROLLS = \
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
   abyss amber chemistry cpmd cryoem dppdiv gamess grace migrate mpi4py \
-  mpiblast mrbayes ncar ncl neuron nwchem phylobayes qe r-modules raxml \
-  siesta upc vasp vmd vtk
+  mpiblast mrbayes ncar ncl neuron nwchem octave phylobayes qe r-modules
+  raxml siesta upc vasp vmd vtk
 MULTI_MPI_ROLLS = \
   boost fftw fpmpi hdf math netcdf p3dfft performance trilinos
 NO_MPI_ROLLS = \
   atlas beagle beast beast2 biotools blcr cern cilk cipres cmake data-transfer \
   ddt fsa gaussian geo gnucompiler gnutools guile hadoop idl img-storage \
-  intel jags julia llvm molden mono mpi nagios octave openbabel pgi polymake \
+  intel jags julia llvm molden mono mpi nagios openbabel pgi polymake \
   python R knime rapidminer scipy sdsc-sec singularity slurm stata weka
 
 # Rolls that load the cuda module - presently, documentation only, since we
