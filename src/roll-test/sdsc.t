@@ -24,7 +24,7 @@ SKIP: {
 
   skip 'sdsc not installed', 11 if ! $isInstalled;
   ok(-f '/opt/sdsc/devel/Rules.mk', 'devel files installed');
-  ok(-f '/etc/profile.d/sdsc.sh', '/etc/profile files installed');
+  ok(-f '/etc/profile.d/all-sdsc.sh', '/etc/profile files installed');
   SKIP: {
     skip 'no modulefiles installed', 1 if ! -d '/opt/modulefiles';
     $output = `ls /opt/modulefiles`;
