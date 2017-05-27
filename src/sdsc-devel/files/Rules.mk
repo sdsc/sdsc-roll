@@ -113,7 +113,7 @@ GET_EXE_VERSION = \
 
 # Macro to extract the version from the whatis text of modulefile $(1)
 GET_MODULE_VERSION = \
-  `module display $(1) 2>&1 | perl -ne 'print($$1) and exit if m/version\D*(\d+(\.\d+)*)/i'`
+  `module display $(1) 2>&1 | perl -ne 'print($$2) and exit if m/whatis\s*(version|$(1))\D+(\d+(\.\d+)*)/i'`
 
 INSTALL_LICENSE_FILES = \
   if test -d license-files; then \
