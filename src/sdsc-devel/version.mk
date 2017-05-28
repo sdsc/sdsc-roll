@@ -1,5 +1,5 @@
 NAME       = sdsc-devel
-VERSION    = 1.4.3
+VERSION    = 1.4.4
 RELEASE    = 0
 PKGROOT    = /opt/sdsc/devel
 
