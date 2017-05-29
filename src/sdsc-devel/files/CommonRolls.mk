@@ -49,36 +49,36 @@ vtk_PREREQS = cmake
 DEFAULT_COMPILER_ROLLS = \
   abyss amber beagle beast biotools chemistry cilk cipres cpmd cryoem dppdiv \
   gamess geo grace jags migrate mpi4py mpiblast mrbayes ncar ncl neuron \
-  nwchem octave performance phylobayes polymake python qe R r-modules raxml \
-  scipy siesta upc vasp vmd vtk
+  nwchem octave phylobayes polymake python qe R r-modules raxml scipy siesta \
+  upc vasp vmd vtk
 MULTI_COMPILER_ROLLS = \
-  atlas boost fftw fpmpi hdf math mpi netcdf p3dfft trilinos
+  atlas boost fftw fpmpi hdf math mpi netcdf p3dfft performance trilinos
 NO_COMPILER_ROLLS = \
   beast2 blcr cern cmake data-transfer ddt fsa gaussian gnucompiler gnutools \
   guile hadoop idl img-storage intel julia knime llvm molden mono nagios \
-  openbabel pgi rapidminer sdsc-sec singularity slurm stata weka
+  openbabel pgi rapidminer qchem sdsc-sec singularity slurm stata weka
 
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
-  abyss amber chemistry cpmd cryoem dppdiv gamess grace migrate mpi4py \
-  mpiblast mrbayes ncar ncl neuron nwchem octave phylobayes qe r-modules
-  raxml siesta upc vasp vmd vtk
+  abyss amber biotools chemistry cpmd cryoem dppdiv gamess grace migrate \
+  mpi4py mpiblast mrbayes ncar ncl neuron nwchem octave phylobayes qe \
+  r-modules raxml siesta upc vasp vmd vtk
 MULTI_MPI_ROLLS = \
   boost fftw fpmpi hdf math netcdf p3dfft performance trilinos
 NO_MPI_ROLLS = \
-  atlas beagle beast beast2 biotools blcr cern cilk cipres cmake data-transfer \
-  ddt fsa gaussian geo gnucompiler gnutools guile hadoop idl img-storage \
-  intel jags julia llvm molden mono mpi nagios openbabel pgi polymake \
-  python R knime rapidminer scipy sdsc-sec singularity slurm stata weka
+  atlas beagle beast beast2 blcr cern cilk cipres cmake data-transfer ddt fsa \
+  gaussian geo gnucompiler gnutools guile hadoop idl img-storage intel jags \
+  knime julia llvm molden mono mpi nagios openbabel pgi polymake python qchem \
+  R rapidminer scipy sdsc-sec singularity slurm stata weka
 
-# Rolls that load the cuda module - presently, documentation only, since we
+# Rolls that load the cuda module - presently documentation only, since we
 # don't produce a cuda roll
-CUDA_ROLLS = amber beagle chemistry mpi scipy vasp
+CUDA_ROLLS = amber beagle chemistry cryoem gaussian mpi scipy vasp
 
 # Rolls that support ROLLPY make var
 PYTHON_ROLLS = \
-  biotools chemistry cryoem hdf llvm math mpi4py neuron openbabel scipy \
-  trilinos vmd vtk
+  amber biotools chemistry cryoem hdf julia llvm math mpi4py neuron openbabel \
+  scipy trilinos vmd vtk
 
 ALL_ROLLS = $(sort $(DEFAULT_COMPILER_ROLLS) $(MULTI_COMPILER_ROLLS) $(NO_COMPILER_ROLLS))
 
@@ -121,61 +121,60 @@ space := $(empty) $(empty)
 $(eval $(subst $(comma)$(space),$(comma),$(DEFINE_ALL_ROLLS)))
 
 # Bitbucket repos not packaged as rolls
-# - lustre-data-mover
-# - slurm
+# lustre-data-mover
+# slurm
 
 # SDSC devel roll; contains this file
-# - sdsc
+# sdsc
 
 # Comet-only
-# - qchem
-# + matlab
-# + mlnx-ofed
-# + xsede-stats
+# matlab
+# mlnx-ofed
+# xsede-stats
 
 # TSCC-only
-# + gold
-# - tscc-config
-# - tscc-private
+# gold
+# tscc-config
+# tscc-private
 
 # Under development
-# + cuda - under devel
-# - json2roll - under devel
-# + rabbitmq - under devel
+# cuda
+# json2roll
+# rabbitmq
 
 # TODO: orphaned?
-# - benchmarks
-# - git
-# - gordon-test-apps
-# - jmodeltest2
-# - lfs
-# - lustre
-# - lustre-sdsc
-# - node
-# - old-slurm
-# + perftest - ask Trevor
-# - sdsc-sec
-# - triton-base - idea became sdsc-roll
-# + usetrax - abandoned
-# - wrf
-# - xsede-common
+# benchmarks
+# git
+# gordon-test-apps
+# jmodeltest2
+# lfs
+# lustre
+# lustre-sdsc
+# node
+# old-slurm
+# perftest
+# sdsc-sec
+# triton-base - idea became sdsc-roll
+# usetrax - abandoned
+# wrf
+# xsede-common
  
 # Rolls marked as deprecated in README.md
-# D boltztrap - abandoned
-# D dataform - renamed netcdf
-# D db2 - abandoned
-# D fsl - abandoned
-# D garli - merged into raxml
-# D gdal - merged into geo
-# D geos - merged into geo
-# D mkl - merged into intel
-# D moab - abandoned
-# D mopac - 100-day license
-# D papi - merged into performance
-# D paraview - installation too complex
-# D plink - merged into biotools
-# D proj - merged into geo
-# D tecplot - abandoned
-# D visit - installation too complex
+# boltztrap - abandoned
+# dataform - renamed netcdf
+# db2 - abandoned
+# fsl - abandoned
+# garli - merged into raxml
+# gdal - merged into geo
+# geos - merged into geo
+# mkl - merged into intel
+# moab - abandoned
+# mopac - 100-day license
+# papi - merged into performance
+# paraview - installation too complex
+# plink - merged into biotools
+# proj - merged into geo
+# tecplot - abandoned
+# visit - installation too complex
 
 endif # __SDSCDEVEL_COMMONROLLS_MK
