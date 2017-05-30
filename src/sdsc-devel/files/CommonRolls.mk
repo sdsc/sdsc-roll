@@ -92,7 +92,7 @@ ALL_ROLLS = $(sort $(DEFAULT_COMPILER_ROLLS) $(MULTI_COMPILER_ROLLS) $(NO_COMPIL
 NO_INTEL_ROLLS = cilk geo R r-modules siesta
 
 # Multi-compiler rolls known to have build failures w/the pgi compilers.
-NO_PGI_ROLLS = atlas boost p3dfft trilinos
+NO_PGI_ROLLS = atlas boost p3dfft performance trilinos
 
 # Rolls not available from github, generally because of a paid license
 RESTRICTED_ROLLS = amber ddt gaussian idl intel pgi stata vasp
