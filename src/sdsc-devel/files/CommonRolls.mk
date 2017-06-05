@@ -95,7 +95,7 @@ NO_INTEL_ROLLS = cilk geo R r-modules siesta
 NO_PGI_ROLLS = atlas boost p3dfft performance trilinos
 
 # Rolls not available from github, generally because of a paid license
-RESTRICTED_ROLLS = amber ddt gaussian idl intel pgi stata vasp
+RESTRICTED_ROLLS = amber ddt gaussian idl intel pgi singularity slurm stata vasp
 
 # gmake's handling of line continuations makes it difficult to format call
 # invocations readably.  Placing the call into a variable to be passed to eval
