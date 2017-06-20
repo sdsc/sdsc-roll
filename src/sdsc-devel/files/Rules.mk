@@ -106,6 +106,7 @@ DESCRIBE_LAPACK = echo built with lapack $(call GET_MODULE_VERSION, lapack)
 DESCRIBE_MKL = echo built with mkl $(call GET_MODULE_VERSION, mkl)
 DESCRIBE_NETCDF = echo built with netcdf $(call GET_MODULE_VERSION, netcdf)
 DESCRIBE_R = echo built with R $(call GET_MODULE_VERSION, R)
+DESCRIBE_SCIPY = echo built with scipy $(call GET_MODULE_VERSION, scipy)
 
 # Macro to extract the version from running $(1) with --version
 GET_EXE_VERSION = \
@@ -154,6 +155,7 @@ MODULE_LOAD_LAPACK = $(call MODULE_LOAD_PACKAGE, lapack, LAPACKHOME)
 MODULE_LOAD_MKL = $(call MODULE_LOAD_PACKAGE, mkl, MKLHOME)
 MODULE_LOAD_NETCDF = $(call MODULE_LOAD_PACKAGE, netcdf, NETCDFHOME)
 MODULE_LOAD_R = $(call MODULE_LOAD_PACKAGE, R, RHOME)
+MODULE_LOAD_SCIPY = $(call MODULE_LOAD_PACKAGE, scipy, SCIPYHOME)
 
 PKGROOT_BIND_MOUNT = $(call BIND_MOUNT, $(PKGROOT), $(ROOT)/$(PKGROOT))
 
