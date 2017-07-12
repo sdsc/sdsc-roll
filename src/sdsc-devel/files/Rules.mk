@@ -62,7 +62,7 @@ ifeq ("$(COMPILERNAME)", "intel")
   FC = ifort
 else ifeq ("$(COMPILERNAME)", "pgi")
   CC = pgcc
-  CXX = pgCC
+  CXX = pgc++
   F77 = pgf77
   FC = pgf90
 endif
