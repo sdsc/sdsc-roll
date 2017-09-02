@@ -9,6 +9,7 @@ GREP.CMD                = $(shell which grep)
 STAT.CMD                = $(shell which stat)
 TAR.CMD                 = $(shell which tar)
 TGZ.OPTS                = -xzf
+TXZ.OPTS                = -xf
 TBZ2.OPTS               = -xjf
 UNZIP.CMD               = $(shell which unzip)
 UNZIP.OPTS              = -q
@@ -17,7 +18,7 @@ VERIFY.OPTS             = hash-object -t blob
 VERIFY.HASHES           = binary_hashes
 
 # ALL packages are part of SRC_PKGS
-SRC_PKGS = $(TAR_GZ_PKGS) $(TAR_BZ2_PKGS) $(TGZ_PKGS) $(WHL_PKGS) $(ZIP_PKGS)
+SRC_PKGS = $(TAR_GZ_PKGS) $(TAR_XZ_PKGS) $(TAR_BZ2_PKGS) $(TGZ_PKGS) $(WHL_PKGS) $(ZIP_PKGS)
 
 # Download the required packages, verify size and hash...
 .PHONY : download $(SRC_PKGS)
@@ -38,6 +39,7 @@ $(SRC_PKGS):
 # For cleanup convert that package archive names into directory names.
 # This can likely be 'generalized' with a variable I don't know yet...
 TAR_GZ_DIRS = $(TAR_GZ_PKGS:%.tar.gz=%)
+TAR_XZ_DIRS = $(TAR_XZ_PKGS:%.tar.xz=%)
 TAR_BZ2_DIRS = $(TAR_BZ2_PKGS:%.tar.bz2=%)
 TGZ_DIRS = $(TGZ_PKGS:%.tgz=%)
 ZIP_DIRS = $(ZIP_PKGS:%.zip=%)
@@ -47,6 +49,11 @@ ZIP_DIRS = $(ZIP_PKGS:%.zip=%)
 $(TAR_GZ_DIRS): $(TAR_GZ_PKGS)
 	@echo "::: Unbundling $@.tar.gz :::"
 	@$(TAR.CMD) $(TGZ.OPTS) $@.tar.gz
+	@echo ""
+
+$(TAR_XZ_DIRS): $(TAR_XZ_PKGS)
+	@echo "::: Unbundling $@.tar.xz :::"
+	@$(TAR.CMD) $(TXZ.OPTS) $@.tar.xz
 	@echo ""
 
 $(TAR_BZ2_DIRS): $(TAR_BZ2_PKGS)
@@ -65,7 +72,7 @@ $(ZIP_DIRS): $(ZIP_PKGS)
 	@echo ""
 
 # SRC_DIRS is the target that build will depend on
-SRC_DIRS = $(TAR_GZ_DIRS) $(TAR_BZ2_DIRS) $(TGZ_DIRS) $(ZIP_DIRS)
+SRC_DIRS = $(TAR_GZ_DIRS) $(TAR_XZ_DIRS) $(TAR_BZ2_DIRS) $(TGZ_DIRS) $(ZIP_DIRS)
 
 # Clean up after ourselves...
 clean::
