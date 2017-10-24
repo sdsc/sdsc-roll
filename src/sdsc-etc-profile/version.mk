@@ -1,5 +1,5 @@
 NAME       = sdsc-etc-profile
-VERSION    = 2
+VERSION    = 3
 RELEASE    = 0
 PKGROOT    = /etc/profile.d
 

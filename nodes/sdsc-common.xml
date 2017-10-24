@@ -15,4 +15,9 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 <package>sdsc-etc-profile</package>
 <package>sdsc-roll-test</package>
 
+<!-- Add SDSC module directories to modules search path -->
+<post>
+/bin/echo -e "/opt/modulefiles/applications\n/opt/modulefiles/compilers\n/opt/modulefiles/mpi" >> /usr/share/Modules/init/.modulespath
+</post>
+
 </kickstart>

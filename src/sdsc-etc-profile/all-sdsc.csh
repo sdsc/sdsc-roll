@@ -1,15 +1,3 @@
-# Note: This file has a name near the beginning of the alphabet to ensure that
-# it runs before any /etc/profile file that loads default modules.
-
-# Add /opt/modulefiles/* to module search path
-foreach F (`find /opt/modulefiles -maxdepth 1 -mindepth 1 -type d`)
-  if (! $?MODULEPATH ) then
-    setenv MODULEPATH ${F}
-  else if ( "$MODULEPATH" !~ *${F}* ) then
-    setenv MODULEPATH ${MODULEPATH}:${F}
-  endif
-end
-
 # Add sdsc libraries to search paths
 if (! $?PYTHONPATH) then
   setenv PYTHONPATH /opt/sdsc/lib::/opt/sdsc/lib/python2.6/site-packages
