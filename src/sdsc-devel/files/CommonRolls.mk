@@ -55,8 +55,8 @@ MULTI_COMPILER_ROLLS = \
   atlas boost fftw fpmpi hdf math mpi netcdf p3dfft performance trilinos
 NO_COMPILER_ROLLS = \
   beast2 blcr cern cmake data-transfer ddt fsa gaussian gnucompiler gnutools \
-  guile hadoop idl intel julia knime llvm molden mono nagios openbabel pgi \
-  rapidminer qchem singularity slurm stata weka
+  guile hadoop idl intel intelmpi julia knime llvm molden mono nagios \
+  openbabel pgi rapidminer qchem singularity slurm stata weka
 
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
@@ -67,9 +67,9 @@ MULTI_MPI_ROLLS = \
   boost fftw fpmpi hdf math netcdf p3dfft performance trilinos
 NO_MPI_ROLLS = \
   atlas beagle beast beast2 blcr cern cilk cipres cmake data-transfer ddt fsa \
-  gaussian geo gnucompiler gnutools guile hadoop idl intel jags knime julia \
-  llvm molden mono mpi nagios openbabel pgi polymake python qchem R \
-  rapidminer scipy singularity slurm stata weka
+  gaussian geo gnucompiler gnutools guile hadoop idl intel intelmpi jags \
+  knime julia llvm molden mono mpi nagios openbabel pgi polymake python qchem \
+  R rapidminer scipy singularity slurm stata weka
 
 # Rolls that load the cuda module - presently documentation only, since we
 # don't produce a cuda roll
@@ -96,7 +96,7 @@ NO_PGI_ROLLS = atlas boost p3dfft performance trilinos
 
 # Rolls not available from github, generally because of a paid license
 RESTRICTED_ROLLS = \
-  amber ddt gaussian idl intel pgi qchem singularity slurm stata vasp
+  amber ddt gaussian idl intel intelmpi pgi qchem singularity slurm stata vasp
 
 # gmake's handling of line continuations makes it difficult to format call
 # invocations readably.  Placing the call into a variable to be passed to eval
