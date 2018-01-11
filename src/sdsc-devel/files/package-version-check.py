@@ -159,7 +159,7 @@ class PackageVersionCheck():
       if currentversion == '':
         currentversion = 'unknown'
       latestversion = self.findlatestversion(
-        commands.getoutput("/usr/bin/curl --insecure '%s' 2>&1" % url),
+        commands.getoutput("/usr/bin/curl --compressed --insecure '%s' 2>&1" % url),
         urlpat, urlformat
       )
       if latestversion == '':
