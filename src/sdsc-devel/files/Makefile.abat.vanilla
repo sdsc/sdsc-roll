@@ -49,6 +49,7 @@ LOG_FILE = $(shell /bin/date +%F-%T-`basename $(THIS_MAKEFILE)`.log)
 
 chemistry_MAKE += ROLLMPI=openmpi_eth
 chemistry_PREREQS += mpi
+llvm_MAKE += ROLLOPTS=clang=no
 ALL_REREQS += mpi
 
 VANILLA_ROLLS = mkl
