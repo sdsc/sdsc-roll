@@ -35,6 +35,9 @@ include $(SDSCDEVEL)/CommonRolls.mk
 # restrictions.  The mysql user is present by default on Rocks systems.
 gamess_USER = mysql
 nwchem_USER = mysql
+openbabel_USER = mysql
+siesta_USER = mysql
+upc_USER = mysql
 
 # data-transfer.t can only be run successfully by a user who can ssh to
 # localhost without a passphrase.  Since no Rocks-defined user (including root)
