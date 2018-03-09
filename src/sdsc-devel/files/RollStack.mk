@@ -159,7 +159,11 @@ make ROLL-vars\\n\
 %-distclean:
 	if test -d $*-roll; then \
 	  cd $*-roll; \
-	  $($(*)_MAKE) distclean; \
+	  make='$($(*)_MAKE)'; \
+	  if test -z "$$make"; then \
+	    make='$(MAKE)'; \
+	  fi; \
+	  $$make distclean; \
 	fi
 
 %-install: /root/rolltests/%.t
@@ -189,8 +193,12 @@ make ROLL-vars\\n\
 	    yum install $$F; \
 	  done; \
 	fi; \
-	echo $($(*)_MAKE) > build.log 2>&1; \
-	$($(*)_MAKE) >> build.log 2>&1
+	make='$($(*)_MAKE)'; \
+	if test -z "$$make"; then \
+	  make='$(MAKE)'; \
+	fi; \
+	echo $$make > build.log 2>&1; \
+	$$make >> build.log 2>&1
 	if find $*-roll -name \*.iso; then \
 	  touch $@; \
 	fi
