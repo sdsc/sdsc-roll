@@ -109,6 +109,40 @@ ROLLDEF = \
 
 THIS_MAKEFILE = $(firstword $(MAKEFILE_LIST))
 
+help::
+	@/bin/echo -e \
+make ROLL-build\\n\
+"  Make ROLL's default target after first building and installing"\\n\
+"  any prerequisites."\\n\
+make ROLL-build-and-test\\n\
+"  Build ROLL; if successful, run its roll test. Saves output to"\\n\
+'  $$(LOG_FILE), which has a default value of DATE-DIR.log.'\\n\
+make ROLL-clean\\n\
+"  Uninstall ROLL and delete its source."\\n\
+make ROLL-checknodes\\n\
+"  Test for rpms built by ROLL that are not installed by its node file(s)."\\n\
+make ROLL-commit\\n\
+"  Commit changes to ROLL's source."\\n\
+make ROLL-distclean\\n\
+"  Make ROLL's distclean target."\\n\
+make ROLL-install\\n\
+"  Install the rpms produced by the roll build.  No post sections"\\n\
+"  from the roll's node file(s) are executed."\\n\
+make ROLL-packages\\n\
+"  Display the packages installed by ROLL."\\n\
+make ROLL-prepreqs\\n\
+"  Build and install ROLL's prerequisite rolls,if any."\\n\
+make ROLL-purge\\n\
+"  Delete ROLL source."\\n\
+make ROLL-roll\\n\
+"  Retrieve ROLL source from archive."\\n\
+make ROLL-test\\n\
+"  Run /root/rolltests/ROLL.t."\\n\
+make ROLL-uninstall\\n\
+"  Uninstall the packages installed by ROLL."\\n\
+make ROLL-vars\\n\
+"  Display the make var values associated with ROLL."
+
 %-build: %-roll/RPMS/TIMESTAMP
 	
 
