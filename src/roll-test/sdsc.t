@@ -31,9 +31,18 @@ SKIP: {
     skip 'no modulefiles installed', 1 if $output !~ /[a-z]/;
     like($ENV{MODULEPATH}, qr#/opt/modulefiles/\w+#, '/opt/modulefiles in MODULEPATH');
   }
-  like($ENV{PYTHONPATH}, qr#/opt/sdsc/lib#, '/opt/sdsc/lib in PYTHONPATH');
-  like($ENV{PATH}, qr#/opt/sdsc/sbin#, '/opt/sdsc/sbin in PATH');
-  like($ENV{PATH}, qr#/opt/sdsc/bin#, '/opt/sdsc/bin in PATH');
+  SKIP: {
+    skip "/opt/sdsc/lib doesn't exist", 1 if ! -d '/opt/sdsc/lib';
+    like($ENV{PYTHONPATH}, qr#/opt/sdsc/lib#, '/opt/sdsc/lib in PYTHONPATH');
+  }
+  SKIP: {
+    skip "/opt/sdsc/sbin doesn't exist", 1 if ! -d '/opt/sdsc/sbin';
+    like($ENV{PATH}, qr#/opt/sdsc/sbin#, '/opt/sdsc/sbin in PATH');
+  }
+  SKIP: {
+    skip "/opt/sdsc/bin doesn't exist", 1 if ! -d '/opt/sdsc/bin';
+     like($ENV{PATH}, qr#/opt/sdsc/bin#, '/opt/sdsc/bin in PATH');
+  }
   is($ENV{SDSCHOME}, '/opt/sdsc', 'SDSCHOME set');
   is($ENV{SDSCDEVEL}, '/opt/sdsc/devel', 'SDSCDEVEL set');
 
