@@ -33,11 +33,13 @@ include $(SDSCDEVEL)/CommonRolls.mk
 
 # Test user for packages where testing by root fails beccause of openmpi
 # restrictions.  The mysql user is present by default on Rocks systems.
-gamess_USER = mysql
-nwchem_USER = mysql
-openbabel_USER = mysql
-siesta_USER = mysql
-upc_USER = mysql
+TEST_USER = mysql
+gamess_USER = $(TEST_USER)
+nwchem_USER = $(TEST_USER)
+openbabel_USER = $(TEST_USER)
+qe_USER = $(TEST_USER)
+siesta_USER = $(TEST_USER)
+upc_USER = $(TEST_USER)
 
 # data-transfer.t can only be run successfully by a user who can ssh to
 # localhost without a passphrase.  Since no Rocks-defined user (including root)
@@ -118,8 +120,18 @@ make help\\n\
 make status\\n\
 "  List the build/install status of all rolls."
 
-mkl-roll: intel-roll
+mkl-roll:
+	$(MAKE) -f $(THIS_MAKEFILE) intel-roll
 	/bin/mv intel-roll mkl-roll
+
+/root/rolltests/mkl.t: mkl-roll/RPMS/TIMESTAMP
+	$(MAKE) -f $(THIS_MAKEFILE) mkl-checknodes
+	for F in mkl-roll/RPMS/*/*.rpm; do \
+	  rpm -i --nodeps $$F || true; \
+	done
+	if test -f $@; then \
+	  touch $@; \
+	fi
 
 status:
 	@for F in $(ALL_ROLLS); do \
