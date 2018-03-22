@@ -46,7 +46,7 @@ upc_USER = $(TEST_USER)
 # can normally do this, this variable may need to be overridden on the make
 # command line.
 data-transfer_USER = $(USER)
-biotools_MAKE += ROLLOPTS='java8home=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.31-1.b13.el6_6.x86_64'
+biotools_MAKE += ROLLOPTS='java8home=/usr/lib/jvm/java-1.8.0'
 
 mkl_MAKE = $(intel_MAKE) ROLLNAME=mkl
 
