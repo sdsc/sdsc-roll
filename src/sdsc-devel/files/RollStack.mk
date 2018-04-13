@@ -163,7 +163,7 @@ make ROLL-vars\\n\
 	  if test -z "$$make"; then \
 	    make='$(MAKE)'; \
 	  fi; \
-	  $$make distclean; \
+	  eval "$$make distclean"; \
 	fi
 
 %-install: /root/rolltests/%.t
@@ -198,7 +198,7 @@ make ROLL-vars\\n\
 	  make='$(MAKE)'; \
 	fi; \
 	echo $$make > build.log 2>&1; \
-	$$make >> build.log 2>&1
+	eval "$$make" >> build.log 2>&1
 	if find $*-roll -name \*.iso; then \
 	  touch $@; \
 	fi
