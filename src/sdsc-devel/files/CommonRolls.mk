@@ -48,8 +48,8 @@ vtk_PREREQS = cmake
 
 # Complete roll set categorized by ROLLCOMPILER value...
 DEFAULT_COMPILER_ROLLS = \
-  abyss amber beagle beast biotools chemistry cilk cipres cpmd cryoem dppdiv \
-  gamess geo grace jags migrate mpi4py mpiblast mrbayes ncar ncl neuron \
+  abinit abyss amber beagle beast biotools chemistry cilk cipres cpmd cryoem \
+  dppdiv gamess geo grace jags migrate mpi4py mpiblast mrbayes ncar ncl neuron \
   nwchem octave phylobayes polymake python qe R r-modules raxml scipy siesta \
   upc vasp vmd vtk
 MULTI_COMPILER_ROLLS = \
@@ -61,8 +61,8 @@ NO_COMPILER_ROLLS = \
 
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
-  abyss amber biotools chemistry cpmd cryoem dppdiv gamess grace migrate \
-  mpi4py mpiblast mrbayes ncar ncl neuron nwchem octave phylobayes qe \
+  abinit abyss amber biotools chemistry cpmd cryoem dppdiv gamess grace \
+  migrate mpi4py mpiblast mrbayes ncar ncl neuron nwchem octave phylobayes qe \
   r-modules raxml siesta upc vasp vmd vtk
 MULTI_MPI_ROLLS = \
   boost fftw fpmpi hdf math netcdf p3dfft performance trilinos
@@ -74,7 +74,7 @@ NO_MPI_ROLLS = \
 
 # Rolls that load the cuda module - presently documentation only, since we
 # don't produce a cuda roll
-CUDA_ROLLS = amber beagle chemistry cryoem gaussian mpi scipy vasp
+CUDA_ROLLS = abinit amber beagle chemistry cryoem gaussian mpi scipy vasp
 
 # Rolls that support ROLLPY make var
 PYTHON_ROLLS = \
