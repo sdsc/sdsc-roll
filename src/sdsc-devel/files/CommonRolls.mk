@@ -13,6 +13,7 @@ __SDSCDEVEL_COMMONROLLS_MK = yes
 
 # Implicit roll prereqs, not derived from ROLL{COMPILER,MPI,PY}
 abyss_PREREQS = boost
+amber_PREREQS = netcdf scipy
 beast_PREREQS = beagle
 biotools_PREREQS = boost cmake gnucompiler math scipy
 cern_PREREQS = cmake gnucompiler
@@ -25,7 +26,7 @@ grace_PREREQS = fftw netcdf
 gnutools_PREREQS = gnucompiler
 guile_PREREQS = gnucompiler gnutools
 jags_PREREQS = math R r-modules
-llvm_PREREQS = gnucompiler
+llvm_PREREQS = cmake gnucompiler
 math_PREREQS = cmake gnucompiler hdf
 mpi_PREREQS = gnutools
 mrbayes_PREREQS = beagle
