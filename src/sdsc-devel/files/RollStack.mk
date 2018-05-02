@@ -190,7 +190,7 @@ make ROLL-vars\\n\
 	cd $*-roll; \
 	if test -f bootstrap.sh; then \
 	  for F in `/usr/bin/perl -ne 'print "$$1\n" if /^\s*yum\s+install\s+(.+)/;' bootstrap.sh`; do \
-	    yum install $$F; \
+	    yum -y install $$F; \
 	  done; \
 	fi; \
 	make='$($(*)_MAKE)'; \
@@ -225,7 +225,7 @@ make ROLL-vars\\n\
 	  rpm -i --nodeps $$F || true; \
 	done
 	for F in `/usr/bin/perl -ne 'next if /sdsc-/; print "$$1\n" if /([^>\s]+)\s*<\/package>/' $*-roll/nodes/*`; do \
-	  /usr/bin/yum install $$F; \
+	  /usr/bin/yum -y install $$F; \
 	done
 	if test -f $@; then \
 	  touch $@; \
