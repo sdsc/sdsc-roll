@@ -1,6 +1,6 @@
 NAME       = sdsc-devel
 VERSION    = 3
-RELEASE    = 4
+RELEASE    = 5
 PKGROOT    = /opt/sdsc/devel
 
 RPM.EXTRAS = AutoReq:No\nAutoProv:No
