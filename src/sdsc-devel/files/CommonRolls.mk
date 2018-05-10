@@ -83,15 +83,6 @@ PYTHON_ROLLS = \
 
 ALL_ROLLS = $(sort $(DEFAULT_COMPILER_ROLLS) $(MULTI_COMPILER_ROLLS) $(NO_COMPILER_ROLLS))
 
-# Single-compiler rolls known to have problems w/intel.
-# Intel-compiled cilk fails to link - see README.md
-# Intel 2013 gdal compilation aborts w/an internal compiler error.
-# Intel 2013-compiled R seems to have memory problems, failing this test:
-#    tp<-svd(matrix(rnorm(250*250),250,250))
-# r-modules ROLLCOMPILER has to match that of R
-# Intel-compiled siesta segfaults
-NO_INTEL_ROLLS = cilk geo R r-modules siesta
-
 # Multi-compiler rolls known to have build failures w/the pgi compilers.
 NO_PGI_ROLLS = atlas boost p3dfft performance trilinos
 
@@ -107,7 +98,6 @@ $$(foreach roll,$$(ALL_ROLLS), \
   $$(call ROLLDEF, \
           $$(roll), \
           $$(if $$(filter $$(roll),$$(MULTI_COMPILER_ROLLS)),ROLLCOMPILER=$$(MULTI_COMPILER)), \
-          $$(if $$(filter $$(roll),$$(NO_INTEL_ROLLS)),ROLLCOMPILER=gnu), \
           $$(if $$(filter $$(roll),$$(NO_PGI_ROLLS)),ROLLCOMPILER=$$(MULTI_COMPILER:pgi=)), \
           $$(if $$(filter $$(roll),$$(NO_COMPILER_ROLLS)),ROLLCOMPILER=), \
           $$(if $$(filter $$(roll),$$(MULTI_MPI_ROLLS)),ROLLMPI=$$(MULTI_MPI)), \
