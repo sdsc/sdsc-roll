@@ -53,11 +53,12 @@ DEFAULT_COMPILER_ROLLS = \
   nwchem octave phylobayes polymake python qe R r-modules raxml scipy siesta \
   upc vasp vmd vtk
 MULTI_COMPILER_ROLLS = \
-  atlas boost fftw fpmpi hdf math mpi netcdf p3dfft performance trilinos
+  atlas boost fftw fpmpi hdf intelmpi math mpi netcdf p3dfft performance \
+  trilinos
 NO_COMPILER_ROLLS = \
   beast2 blcr cern cmake data-transfer ddt fsa gaussian gnucompiler gnutools \
-  guile hadoop idl intel intelmpi julia knime llvm molden mono nagios \
-  openbabel pgi rapidminer qchem singularity slurm stata weka
+  guile hadoop idl intel julia knime llvm molden mono nagios openbabel pgi \
+  rapidminer qchem singularity slurm stata weka
 
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
