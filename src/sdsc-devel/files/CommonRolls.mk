@@ -9,7 +9,9 @@ __SDSCDEVEL_COMMONROLLS_MK = yes
 #     built and rolled with more than one compiler
 # * MULTI_MPI - list of mpi modules to be loaded by rolls that can be built and
 #     rolled with more than one mpi flavor
-# * %-ROLLOPTS - optional package-specific ROLLOPTS values
+# * %_ROLLCOMPILER - optional package-specific ROLLCOMPILER values
+# * %_ROLLMPI - optional package-specific ROLLMPI values
+# * %_ROLLOPTS - optional package-specific ROLLOPTS values
 
 # Implicit roll prereqs, not derived from ROLL{COMPILER,MPI,PY}
 abyss_PREREQS = boost
@@ -105,6 +107,8 @@ $$(foreach roll,$$(ALL_ROLLS), \
           $$(if $$(filter $$(roll),$$(NO_MPI_ROLLS)),ROLLMPI=), \
           $$(if $$(filter $$(roll),$$(PYTHON_ROLLS)),ROLLPY=python), \
           PREREQS=$$($$(roll)_PREREQS), \
+          $$(if $$($$(roll)_ROLLCOMPILER),ROLLCOMPILER=$$($$(roll)_ROLLCOMPILER)), \
+          $$(if $$($$(roll)_ROLLMPI),ROLLMPI=$$($$(roll)_ROLLMPI)), \
           $$(if $$($$(roll)_ROLLOPTS),ROLLOPTS=$$($$(roll)_ROLLOPTS)), \
   ) \
 )
