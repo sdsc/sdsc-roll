@@ -95,14 +95,20 @@ ROLLDEF = \
   $(eval $(1)_ROLLOPTS = $(DEFAULT_ROLLOPTS)) \
   $(eval $(1)_ROLLPY = $(DEFAULT_ROLLPY)) \
   $(eval $(1)_USER = $(DEFAULT_USER)) \
-  $(if $2,$(eval $(1)_$(2))) \
-  $(if $3,$(eval $(1)_$(3))) \
-  $(if $4,$(eval $(1)_$(4))) \
-  $(if $5,$(eval $(1)_$(5))) \
-  $(if $6,$(eval $(1)_$(6))) \
-  $(if $7,$(eval $(1)_$(7))) \
-  $(if $8,$(eval $(1)_$(8))) \
-  $(if $9,$(eval $(1)_$(9))) \
+  $(if $(2),$(eval $(1)_$(2))) \
+  $(if $(3),$(eval $(1)_$(3))) \
+  $(if $(4),$(eval $(1)_$(4))) \
+  $(if $(5),$(eval $(1)_$(5))) \
+  $(if $(6),$(eval $(1)_$(6))) \
+  $(if $(7),$(eval $(1)_$(7))) \
+  $(if $(8),$(eval $(1)_$(8))) \
+  $(if $(9),$(eval $(1)_$(9))) \
+  $(if $(10),$(eval $(1)_$(10))) \
+  $(if $(11),$(eval $(1)_$(11))) \
+  $(if $(12),$(eval $(1)_$(12))) \
+  $(if $(13),$(eval $(1)_$(13))) \
+  $(if $(14),$(eval $(1)_$(14))) \
+  $(if $(15),$(eval $(1)_$(15))) \
   $(eval $(1)_MAKE = $(MAKE) $(if $($(1)_ROLLCOMPILER),ROLLCOMPILER="$($(1)_ROLLCOMPILER)") $(if $($(1)_ROLLMPI),ROLLMPI="$($(1)_ROLLMPI)") $(if $($(1)_ROLLPY),ROLLPY="$($(1)_ROLLPY)") $(if $($(1)_ROLLOPTS),ROLLOPTS="$($(1)_ROLLOPTS)")) \
   $(eval $(1)_PREREQS += $(subst gnu,gnucompiler,$($(1)_ROLLCOMPILER)) $(patsubst %,mpi,$(subst rocks-openmpi,,$($(1)_ROLLMPI))) $(patsubst %,python,$($(1)_ROLLPY))) \
   $(foreach prereq,$($(1)_PREREQS),$(if $(filter $(prereq),$(ALL_PREREQS)),,$(eval ALL_PREREQS += $(prereq))))
