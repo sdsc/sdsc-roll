@@ -20,7 +20,6 @@ beast_PREREQS = beagle
 biotools_PREREQS = boost cmake gnucompiler math scipy
 cern_PREREQS = cmake gnucompiler
 chemistry_PREREQS = cmake fftw netcdf
-cilk_PREREQS = gnucompiler
 cpmd_PREREQS = fftw
 gaussian_PREREQS = pgi
 geo_PREREQS = R
@@ -50,7 +49,7 @@ vtk_PREREQS = cmake
 
 # Complete roll set categorized by ROLLCOMPILER value...
 DEFAULT_COMPILER_ROLLS = \
-  abinit abyss amber beagle beast biotools chemistry cilk cipres cpmd cryoem \
+  abinit abyss amber beagle beast biotools chemistry cipres cpmd cryoem \
   dppdiv gamess geo grace jags migrate mpi4py mpiblast mrbayes ncar ncl neuron \
   nwchem octave phylobayes polymake python qe R r-modules raxml scipy siesta \
   upc vasp vmd vtk
@@ -58,9 +57,9 @@ MULTI_COMPILER_ROLLS = \
   atlas boost fftw fpmpi hdf intelmpi math mpi netcdf p3dfft performance \
   trilinos
 NO_COMPILER_ROLLS = \
-  beast2 blcr cern cmake data-transfer ddt fsa gaussian gnucompiler gnutools \
-  guile hadoop idl intel julia knime llvm molden mono nagios openbabel pgi \
-  rapidminer qchem singularity slurm stata weka
+  beast2 blcr cern cilk cmake data-transfer ddt fsa gaussian gnucompiler \
+  gnutools guile hadoop idl intel julia knime llvm molden mono nagios \
+  openbabel pgi rapidminer qchem singularity slurm stata weka
 
 # ... and again by ROLLMPI value.
 DEFAULT_MPI_ROLLS = \
