@@ -14,6 +14,7 @@ __SDSCDEVEL_COMMONROLLS_MK = yes
 # * %_ROLLOPTS - optional package-specific ROLLOPTS values
 
 # Implicit roll prereqs, not derived from ROLL{COMPILER,MPI,PY}
+abinit_PREREQS = netcdf
 abyss_PREREQS = boost
 amber_PREREQS = netcdf scipy
 beast_PREREQS = beagle
