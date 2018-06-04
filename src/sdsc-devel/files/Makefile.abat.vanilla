@@ -5,13 +5,7 @@
 # and test timings are results are directed to a timestamped log file; detailed
 # build output is allowed to flow to stdout.
 #
-# This Makefile defines these targets:
-#
-# (default) - build and test all rolls
-#
-# clean - uninstall and purge all rolls
-#
-# %-build-and-test - build and run the roll test for a single roll
+# Run "make help" to see supported targets.
 
 # URL used for roll git clone
 GIT_URL = https://github.com/sdsc/$(1)-roll.git
@@ -26,8 +20,11 @@ MULTI_COMPILER = gnu
 MULTI_MPI = rocks-openmpi
 
 # Roll-specific ROLLOPTS values
-amber_ROLLOPTS = $(DEFAULT_ROLLOPTS) cuda
+biotools_ROLLOPTS = java8home=/usr/lib/jvm/java-1.8.0
+llvm_ROLLOPTS = lldb=no
 
+default: build-and-test-all
+	
 include $(SDSCDEVEL)/RollStack.mk
 include $(SDSCDEVEL)/CommonRolls.mk
 
@@ -46,7 +43,6 @@ upc_USER = $(TEST_USER)
 # can normally do this, this variable may need to be overridden on the make
 # command line.
 data-transfer_USER = $(USER)
-biotools_MAKE += ROLLOPTS='java8home=/usr/lib/jvm/java-1.8.0'
 
 mkl_MAKE = $(intel_MAKE) ROLLNAME=mkl
 
@@ -54,7 +50,6 @@ LOG_FILE = $(shell /bin/date +%F-%T-`basename $(THIS_MAKEFILE)`.log)
 
 chemistry_MAKE += ROLLMPI=openmpi_eth
 chemistry_PREREQS += mpi
-llvm_MAKE += ROLLOPTS=clang=no
 ALL_REREQS += mpi
 
 VANILLA_ROLLS = mkl
