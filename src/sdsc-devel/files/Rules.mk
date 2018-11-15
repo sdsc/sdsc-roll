@@ -36,14 +36,14 @@ __SDSCDEVEL_ROLL_MK = yes
 # * MODULE_LOAD_PACKAGE(1,2) - macro that produces recipe steps to load
 #   modulefile $(1) and echo the value of environment variable $(2)
 #
-# * MODULE_UNLOAD_PACKAGE(1) - macro that produces recipe steps to load
+# * MODULE_UNLOAD_PACKAGE(1) - macro that produces recipe steps to unload
 #   modulefile $(1)
 #
 # * MODULE_LOAD_{CC,CXX,F77,FC,PYTHON,MPI,PKG,BOOST,CUDA,EIGEN,FFTW,GMP,HDF4,HDF5,LAPACK,MKL,NETCDF,R} -
 #   variables that contain recipe steps to load specific modulefiles
 #
 # * MODULE_UNLOAD_{CC,CXX,F77,FC,PYTHON,MPI,PKG,BOOST,CUDA,EIGEN,FFTW,GMP,HDF4,HDF5,LAPACK,MKL,NETCDF,R} -
-#   variables that contain recipe steps to load specific modulefiles
+#   variables that contain recipe steps to unload specific modulefiles
 #
 # * PKGROOT_BIND_{MOUNT,UMOUNT} - variables that contain recipe steps to create
 #   $(PKGROOT) and mount it to $(ROOT)/$(PKGROOT), umount and destroy it.
