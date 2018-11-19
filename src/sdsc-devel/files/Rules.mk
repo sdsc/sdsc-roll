@@ -30,11 +30,20 @@ __SDSCDEVEL_ROLL_MK = yes
 # * MODULE_LOAD_COMPILER(1,2) - macro that produces recipe steps to load
 #   modulefile $(1) and run exe $(2) to report its version
 #
+# * MODULE_UNLOAD_COMPILER(1) - macro that produces recipe steps to unload
+#   modulefile $(1)
+#
 # * MODULE_LOAD_PACKAGE(1,2) - macro that produces recipe steps to load
 #   modulefile $(1) and echo the value of environment variable $(2)
 #
+# * MODULE_UNLOAD_PACKAGE(1) - macro that produces recipe steps to unload
+#   modulefile $(1)
+#
 # * MODULE_LOAD_{CC,CXX,F77,FC,PYTHON,MPI,PKG,BOOST,CUDA,EIGEN,FFTW,GMP,HDF4,HDF5,LAPACK,MKL,NETCDF,R} -
 #   variables that contain recipe steps to load specific modulefiles
+#
+# * MODULE_UNLOAD_{CC,CXX,F77,FC,PYTHON,MPI,PKG,BOOST,CUDA,EIGEN,FFTW,GMP,HDF4,HDF5,LAPACK,MKL,NETCDF,R} -
+#   variables that contain recipe steps to unload specific modulefiles
 #
 # * PKGROOT_BIND_{MOUNT,UMOUNT} - variables that contain recipe steps to create
 #   $(PKGROOT) and mount it to $(ROOT)/$(PKGROOT), umount and destroy it.
@@ -129,33 +138,61 @@ MODULE_LOAD_COMPILER = \
   echo === Compiler and version ===; \
   $(2) --version
 
+MODULE_UNLOAD_COMPILER = \
+  module unload $(1) || true; \
+  echo === Compiler $(1) unloaded ===
+
 MODULE_LOAD_PACKAGE = \
   module load $(1) || true; \
   echo === $(2) ===; \
   echo $${$(strip $(2))}
 
+MODULE_UNLOAD_PACKAGE = \
+  module unload $(1) || true; \
+  echo === Package $(1) unloaded ===
+
+
 MODULE_LOAD_CC = $(call MODULE_LOAD_COMPILER, $(ROLLCOMPILER), $(CC))
+MODULE_UNLOAD_CC = $(call MODULE_UNLOAD_COMPILER, $(ROLLCOMPILER))
 MODULE_LOAD_CXX = $(call MODULE_LOAD_COMPILER, $(ROLLCOMPILER), $(CXX))
+MODULE_UNLOAD_CXX = $(call MODULE_UNLOAD_COMPILER, $(ROLLCOMPILER))
 MODULE_LOAD_F77 = $(call MODULE_LOAD_COMPILER, $(ROLLCOMPILER), $(F77))
+MODULE_UNLOAD_F77 = $(call MODULE_UNLOAD_COMPILER, $(ROLLCOMPILER))
 MODULE_LOAD_FC = $(call MODULE_LOAD_COMPILER, $(ROLLCOMPILER), $(FC))
+MODULE_UNLOAD_FC = $(call MODULE_UNLOAD_COMPILER, $(ROLLCOMPILER))
 
 MODULE_LOAD_MPI = $(call MODULE_LOAD_PACKAGE, $(ROLLMPI), MPIHOME)
+MODULE_UNLOAD_MPI = $(call MODULE_UNLOAD_PACKAGE, $(ROLLMPI))
 
 MODULE_LOAD_PYTHON = $(call MODULE_LOAD_COMPILER, $(ROLLPY), python)
+MODULE_UNLOAD_PYTHON = $(call MODULE_UNLOAD_COMPILER, $(ROLLPY))
 
 MODULE_LOAD_BOOST = $(call MODULE_LOAD_PACKAGE, boost, BOOSTHOME)
+MODULE_UNLOAD_BOOST = $(call MODULE_UNLOAD_PACKAGE, boost)
 MODULE_LOAD_CMAKE = $(call MODULE_LOAD_PACKAGE, cmake, CMAKEHOME)
+MODULE_UNLOAD_CMAKE = $(call MODULE_UNLOAD_PACKAGE, cmake)
 MODULE_LOAD_CUDA = $(call MODULE_LOAD_PACKAGE, cuda, CUDAHOME)
+MODULE_UNLOAD_CUDA = $(call MODULE_UNLOAD_PACKAGE, cuda)
 MODULE_LOAD_EIGEN = $(call MODULE_LOAD_PACKAGE, eigen, EIGENHOME)
+MODULE_UNLOAD_EIGEN = $(call MODULE_UNLOAD_PACKAGE, eigen)
 MODULE_LOAD_FFTW = $(call MODULE_LOAD_PACKAGE, fftw, FFTWHOME)
+MODULE_UNLOAD_FFTW = $(call MODULE_UNLOAD_PACKAGE, fftw)
 MODULE_LOAD_GMP = $(call MODULE_LOAD_PACKAGE, gmp, GMPHOME)
+MODULE_UNLOAD_GMP = $(call MODULE_UNLOAD_PACKAGE, gmp)
 MODULE_LOAD_HDF4 = $(call MODULE_LOAD_PACKAGE, hdf4, HDF4HOME)
+MODULE_UNLOAD_HDF4 = $(call MODULE_UNLOAD_PACKAGE, hdf4)
 MODULE_LOAD_HDF5 = $(call MODULE_LOAD_PACKAGE, hdf5, HDF5HOME)
+MODULE_UNLOAD_HDF5 = $(call MODULE_UNLOAD_PACKAGE, hdf5)
 MODULE_LOAD_LAPACK = $(call MODULE_LOAD_PACKAGE, lapack, LAPACKHOME)
+MODULE_UNLOAD_LAPACK = $(call MODULE_UNLOAD_PACKAGE, lapack)
 MODULE_LOAD_MKL = $(call MODULE_LOAD_PACKAGE, mkl, MKLHOME)
+MODULE_UNLOAD_MKL = $(call MODULE_UNLOAD_PACKAGE, mkl)
 MODULE_LOAD_NETCDF = $(call MODULE_LOAD_PACKAGE, netcdf, NETCDFHOME)
+MODULE_UNLOAD_NETCDF = $(call MODULE_UNLOAD_PACKAGE, netcdf)
 MODULE_LOAD_R = $(call MODULE_LOAD_PACKAGE, R, RHOME)
+MODULE_UNLOAD_R = $(call MODULE_UNLOAD_PACKAGE, R)
 MODULE_LOAD_SCIPY = $(call MODULE_LOAD_PACKAGE, scipy, SCIPYHOME)
+MODULE_UNLOAD_SCIPY = $(call MODULE_UNLOAD_PACKAGE, scipy)
 
 PKGROOT_BIND_MOUNT = $(call BIND_MOUNT, $(PKGROOT), $(ROOT)/$(PKGROOT))
 
