@@ -5,14 +5,6 @@ if test -d /opt/sdsc/lib; then
   elif ! [[ "${PYTHONPATH}" =~ "/opt/sdsc/lib" ]]; then
     export PYTHONPATH=${PYTHONPATH}:/opt/sdsc/lib
   fi
-  if test -d /opt/sdsc/lib/lib/python2.6/site-packages; then
-    export PYTHONPATH=${PYTHONPATH}:/opt/sdsc/lib/python2.6/site-packages
-  fi
-  if test -z "${LD_LIBRARY_PATH}"; then
-    export LD_LIBRARY_PATH=/opt/sdsc/lib
-  elif ! [[ "${LD_LIBRARY_PATH}" =~ "/opt/sdsc/lib" ]]; then
-    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/sdsc/lib
-  fi
 fi
 
 # Add sdsc scripts to path

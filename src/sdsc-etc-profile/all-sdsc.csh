@@ -5,14 +5,6 @@ if (-d /opt/sdsc/lib) then
   else if ( "$PYTHONPATH" !~ */opt/sdsc/lib* ) then
     setenv PYTHONPATH ${PYTHONPATH}:/opt/sdsc/lib
   endif
-  if (-d /opt/sdsc/lib/lib/python2.6/site-packages) then
-    setenv PYTHONPATH ${PYTHONPATH}:/opt/sdsc/lib/python2.6/site-packages
-  endif
-  if (! $?LD_LIBRARY_PATH) then
-    setenv LD_LIBRARY_PATH /opt/sdsc/lib
-  else if ( "$LD_LIBRARY_PATH" !~ */opt/sdsc/lib* ) then
-    setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:/opt/sdsc/lib
-  endif
 endif
 
 # Add sdsc scripts to path
